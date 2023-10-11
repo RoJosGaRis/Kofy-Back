@@ -19,11 +19,6 @@ const pool = new Pool({
 app.get("/", (req, res) => res.send("Hello World!"));
 
 app.get("/users", (req, res) => {
-  console.log(process.env.DB_USER);
-  console.log(process.env.DB_HOST);
-  console.log(process.env.DB_NAME);
-  console.log(process.env.DB_PASS);
-  console.log(process.env.DB_PORT);
   pool.query("SELECT * FROM users", (error, results) => {
     if (error) throw error;
     res.send(results.rows);
