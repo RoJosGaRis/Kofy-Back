@@ -6,6 +6,9 @@ const pg = require("pg");
 const app = express();
 const port = 3000;
 
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+
 const Pool = pg.Pool;
 
 const pool = new Pool({
