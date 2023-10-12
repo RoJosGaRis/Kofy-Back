@@ -18,11 +18,7 @@ const pool = new Pool({
 
 app.get("/", (req, res) => res.send("Hello World!"));
 
-app.get("/users", (req, res) => {
-  pool.query("SELECT * FROM users", (error, results) => {
-    if (error) throw error;
-    res.send(results.rows);
-  });
-});
+const userRouter = require("./routes/userSession");
+app.use("/user", userRouter);
 
 app.listen(port, () => console.log(`Express app running on port ${port}!`));
