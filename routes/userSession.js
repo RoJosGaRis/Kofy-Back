@@ -1,16 +1,23 @@
 const express = require("express");
+const { PrismaClient } = require("@prisma/client");
 const router = express.Router();
+const prisma = new PrismaClient();
 
-const pg = require("pg");
+// const pg = require("pg");
 
-const Pool = pg.Pool;
+// const Pool = pg.Pool;
 
-const pool = new Pool({
-  user: process.env.DB_USER,
-  host: process.env.DB_HOST,
-  database: process.env.DB_NAME,
-  password: process.env.DB_PASS,
-  port: process.env.DB_PORT,
+// const pool = new Pool({
+//   user: process.env.DB_USER,
+//   host: process.env.DB_HOST,
+//   database: process.env.DB_NAME,
+//   password: process.env.DB_PASS,
+//   port: process.env.DB_PORT,
+// });
+
+router.get("/loginsTest", async (req, res) => {
+  const logins = await prisma.logins.findMany();
+  res.json(logins);
 });
 
 router.post("/register", async (req, res) => {

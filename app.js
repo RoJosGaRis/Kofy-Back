@@ -2,9 +2,11 @@ require("dotenv").config();
 
 const express = require("express");
 const pg = require("pg");
+const { PrismaClient } = require("@prisma/client");
 
 const app = express();
 const port = 3000;
+const prisma = new PrismaClient();
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -20,6 +22,11 @@ const pool = new Pool({
 });
 
 app.get("/", (req, res) => res.send("Hello World!"));
+
+app.get("/logins", async (req, res) => {
+  const logins = await prisma.logins.findMany();
+  res.json(logins);
+});
 
 const userRouter = require("./routes/userSession");
 app.use("/user", userRouter);
