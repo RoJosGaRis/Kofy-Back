@@ -8,27 +8,29 @@ const prisma = new PrismaClient();
 router.post("/register", async (req, res) => {
   const { username, email, password, type } = req.body;
   try {
-    bcrypt
-      .genSalt(Number(process.env.SALT_ROUNDS))
-      .then((salt) => {
-        return bcrypt.hash(password, salt);
-      })
-      .then(async (hash) => {
-        return (newUser = await prisma.logins.create({
-          data: {
-            username,
-            email,
-            password: hash,
-            type: Number(type),
-          },
-        }));
-      })
-      .then((newUser) => {
-        res.status(201).json(newUser);
-      })
-      .catch((err) => {
-        throw err;
-      });
+    //   bcrypt
+    //     .genSalt(Number(process.env.SALT_ROUNDS))
+    //     .then((salt) => {
+    //       return bcrypt.hash(password, salt);
+    //     })
+    //     .then(async (hash) => {
+    //       return ();
+    //     })
+    //     .then((newUser) => {
+    //       res.status(201).json(newUser);
+    //     })
+    //     .catch((err) => {
+    //       throw err;
+    //     });
+
+    newUser = await prisma.logins.create({
+      data: {
+        username,
+        email,
+        password: password,
+        type: Number(type),
+      },
+    });
   } catch (error) {
     console.log(req.body);
     res.status(400).json({ message: error.message });
