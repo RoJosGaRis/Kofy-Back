@@ -1,6 +1,8 @@
 const express = require("express");
 const { PrismaClient } = require("@prisma/client");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+const validateToken = require("../helper/validateToken");
 
 const router = express.Router();
 const prisma = new PrismaClient();
@@ -8,31 +10,44 @@ const prisma = new PrismaClient();
 router.post("/register", async (req, res) => {
   const { username, email, password, type } = req.body;
   try {
-    //   bcrypt
-    //     .genSalt(Number(process.env.SALT_ROUNDS))
-    //     .then((salt) => {
-    //       return bcrypt.hash(password, salt);
-    //     })
-    //     .then(async (hash) => {
-    //       return ();
-    //     })
-    //     .then((newUser) => {
-    //       res.status(201).json(newUser);
-    //     })
-    //     .catch((err) => {
-    //       throw err;
-    //     });
-
-    newUser = await prisma.logins.create({
-      data: {
-        username,
-        email,
-        password: password,
-        type: Number(type),
+    const oldUser = await prisma.logins.findUnique({
+      where: {
+        email: email,
       },
     });
+
+    if (oldUser) {
+      throw new Error("User already exists");
+    }
+
+    bcrypt
+      .genSalt(Number(process.env.SALT_ROUNDS))
+      .then((salt) => {
+        return bcrypt.hash(password, salt);
+      })
+      .then(async (hash) => {
+        newUser = await prisma.logins.create({
+          data: {
+            username,
+            email: email.toLowerCase(),
+            password: hash,
+            type: Number(type),
+          },
+        });
+
+        const token = jwt.sign(
+          { user_id: newUser.id, email },
+          process.env.TOKEN_KEY,
+          { expiresIn: "2m" }
+        );
+
+        console.log(token);
+        res.send({ token: token, userId: newUser.id });
+      })
+      .catch((err) => {
+        throw err;
+      });
   } catch (error) {
-    console.log(req.body);
     res.status(400).json({ message: error.message });
   }
 });
@@ -40,70 +55,61 @@ router.post("/register", async (req, res) => {
 router.post("/login", async (req, res) => {
   const { email, password } = req.body;
 
+  let existingUser;
   try {
-    const user = await prisma.logins.findUnique({
+    const existingUser = await prisma.logins.findUnique({
       where: {
         email: email,
       },
     });
 
-    if (!user) {
+    if (!existingUser) {
       throw new Error("User not found");
     }
 
-    const isMatch = await bcrypt.compare(password, user.password);
+    const isMatch = await bcrypt.compare(password, existingUser.password);
 
     if (!isMatch) {
       throw new Error("Password does not match");
     }
 
-    res.status(201).json(user);
+    let token;
+    try {
+      token = jwt.sign(
+        { userId: existingUser.id, email: existingUser.email },
+        process.env.TOKEN_KEY,
+        { expiresIn: "2m" }
+      );
+    } catch (err) {
+      console.log(err);
+      throw new Error("Error! Something went wrong.");
+    }
+    res.status(201).json({
+      success: true,
+      data: {
+        userId: existingUser.id,
+        token: token,
+      },
+    });
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
 });
 
-// router.get("/logins", (req, res) => {
-//   pool.query("SELECT * FROM logins;", (error, results) => {
-//     if (error) {
-//       res.status(400).json({ message: error.message });
-//     }
-//     res.status(201).send(results.rows);
-//   });
-// });
+router.post("/profile", validateToken, async (req, res) => {
+  user = await prisma.logins.findUnique({
+    where: {
+      id: Number(req.body.userId),
+    },
+  });
 
-// router.put("/updateLogin", (req, res) => {
-//   pool.query(
-//     "UPDATE logins SET username = $2, email = $3, password = $4, type = $5 WHERE id = $1 RETURNING *;",
-//     [
-//       req.body.id,
-//       req.body.username,
-//       req.body.email,
-//       req.body.password,
-//       req.body.type,
-//     ],
-//     (error, results) => {
-//       if (error) {
-//         res.status(400).json({ message: error.message });
-//       } else {
-//         res.status(201).send(results.rows);
-//       }
-//     }
-//   );
-// });
-
-// router.delete("/deleteLogin", (req, res) => {
-//   pool.query(
-//     "DELETE FROM logins WHERE id = $1 RETURNING *",
-//     [req.body.id],
-//     (error, results) => {
-//       if (error) {
-//         res.status(400).json({ message: error.message });
-//       } else {
-//         res.status(201).send(results.rows);
-//       }
-//     }
-//   );
-// });
+  res.status(201).json({
+    success: true,
+    data: {
+      userId: user.userId,
+      email: user.email,
+    },
+  });
+});
 
 module.exports = router;
