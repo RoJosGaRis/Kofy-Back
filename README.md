@@ -1,10 +1,10 @@
 Listo:
 
-Por hacer:
-
 > LOGIN
 - Ruta para crear usuario (correo, usuario y contraseña)
 - Ruta para iniciar sesion (regresar ID del usuario)
+
+Por hacer:
 
 > MAIN PAGE
 - Ruta para crear recordatorios
