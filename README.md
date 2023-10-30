@@ -1,3 +1,11 @@
+# API de Kofy
+
+## Instrucciones de instalación
+
+# Instalar Node
+# Descargar 
+
+## Lista de tareas
 Listo:
 
 > LOGIN
