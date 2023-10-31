@@ -21,8 +21,6 @@ app.use(express.json());
 //   port: process.env.DB_PORT,
 // });
 
-app.get("/", (req, res) => res.send("Hello World!"));
-
 // app.get("/logins", async (req, res) => {
 //   const logins = await prisma.logins.findMany();
 //   res.json(logins);
