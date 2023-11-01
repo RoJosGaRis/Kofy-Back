@@ -40,9 +40,7 @@ router.post("/register", async (req, res) => {
           process.env.TOKEN_KEY,
           { expiresIn: "2m" }
         );
-
-        console.log(token);
-        res.send({ token: token, userId: newUser.id });
+        res.status(201).send({ token: token, userId: newUser.id });
       })
       .catch((err) => {
         throw err;
@@ -70,7 +68,7 @@ router.post("/login", async (req, res) => {
     const isMatch = await bcrypt.compare(password, existingUser.password);
 
     if (!isMatch) {
-      throw new Error("Password does not match");
+      throw new Error("Credentials do not match");
     }
 
     let token;
@@ -85,31 +83,28 @@ router.post("/login", async (req, res) => {
       throw new Error("Error! Something went wrong.");
     }
     res.status(201).json({
-      success: true,
-      data: {
-        userId: existingUser.id,
-        token: token,
-      },
+      userId: existingUser.id,
+      token: token,
     });
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
 });
 
-router.post("/profile", validateToken, async (req, res) => {
-  user = await prisma.logins.findUnique({
-    where: {
-      id: Number(req.body.userId),
-    },
-  });
+// router.post("/profile", validateToken, async (req, res) => {
+//   user = await prisma.logins.findUnique({
+//     where: {
+//       id: Number(req.body.userId),
+//     },
+//   });
 
-  res.status(201).json({
-    success: true,
-    data: {
-      userId: user.userId,
-      email: user.email,
-    },
-  });
-});
+//   res.status(201).json({
+//     success: true,
+//     data: {
+//       userId: user.userId,
+//       email: user.email,
+//     },
+//   });
+// });
 
 module.exports = router;
