@@ -8,9 +8,27 @@ datasource db {
 }
 
 model logins {
-  id       Int    @id @default(autoincrement())
-  username String @db.VarChar(255)
-  email    String @unique(map: "unique_email") @db.VarChar(255)
-  password String @db.VarChar(255)
+  id       Int       @id @default(autoincrement())
+  username String    @db.VarChar(255)
+  email    String    @unique(map: "unique_email") @db.VarChar(255)
+  password String    @db.VarChar(255)
   type     Int
+  profiles profiles?
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model profiles {
+  id             Int      @id(map: "id_PK") @default(autoincrement())
+  loginId        Int      @unique(map: "loginsId_Unique")
+  names          String   @db.VarChar(50)
+  lastNames      String   @db.VarChar(50)
+  birthday       DateTime @db.Date
+  gender         String   @db.Char(50)
+  profilePicture Int
+  bloodType      String   @db.VarChar(50)
+  height         Int
+  weight         Float
+  allergies      String   @db.VarChar(250)
+  diseases       String   @db.VarChar(250)
+  logins         logins   @relation(fields: [loginId], references: [id], onUpdate: Restrict, map: "loginsId_FK")
 }
