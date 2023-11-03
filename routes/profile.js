@@ -27,3 +27,5 @@ router.post("/getProfile", validateToken, async (req, res) => {
     res.status(400).json({ message: err.message });
   }
 });
+
+module.exports = router;
