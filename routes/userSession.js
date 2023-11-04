@@ -91,6 +91,29 @@ router.post("/login", async (req, res) => {
   }
 });
 
+router.post("/verify", validateToken, async (req, res) => {
+  // verify userId with token
+  const userId = req.body.userId;
+  const token = req.header.token;
+
+  jwt.decode(token, process.env.TOKEN_KEY, (err, decoded) => {
+    if (err) {
+      return res.status(401).json({
+        success: false
+      });
+    }
+    if (decoded.userId !== userId) {
+      return res.status(401).json({
+        success: false
+      });
+    } else {
+      return res.status(200).json({
+        success: true
+      });
+    }
+  });
+});
+
 // router.post("/profile", validateToken, async (req, res) => {
 //   user = await prisma.logins.findUnique({
 //     where: {
