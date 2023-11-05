@@ -94,24 +94,26 @@ router.post("/login", async (req, res) => {
 router.post("/verify", validateToken, async (req, res) => {
   // verify userId with token
   const userId = req.body.userId;
-  const token = req.header.token;
+  const token = req.body.token;
 
-  jwt.decode(token, process.env.TOKEN_KEY, (err, decoded) => {
+  let decoded = jwt.decode(token, process.env.TOKEN_KEY, (err, decoded) => {
     if (err) {
       return res.status(401).json({
         isValid: false
       });
     }
-    if (decoded.userId !== userId) {
-      return res.status(401).json({
-        isValid: false
-      });
-    } else {
-      return res.status(200).json({
-        isValid: true
-      });
-    }
   });
+
+
+  if (decoded.userId !== userId) {
+    return res.status(401).json({
+      isValid: false
+    });
+  } else {
+    return res.status(200).json({
+      isValid: true
+    });
+  }
 });
 
 // router.post("/profile", validateToken, async (req, res) => {

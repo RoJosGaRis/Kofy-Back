@@ -2,7 +2,9 @@ const jwt = require("jsonwebtoken");
 
 function validateToken(req, res, next) {
   let accessGranted = false;
-  let token = req.header.token;
+  let token = req.get("authorization")
+  token = token.split(" ")[1];
+
   if (!token) {
     return res.status(401).json({
       error: 1,
@@ -11,8 +13,8 @@ function validateToken(req, res, next) {
   } else {
     jwt.verify(token, process.env.TOKEN_KEY, (err, decoded) => {
       if (err) {
-        return res.status(401).json({
-          error: err,
+        return res.status(200).json({
+          isValid: false,
         });
       } else {
         accessGranted = true;
