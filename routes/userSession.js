@@ -96,13 +96,15 @@ router.post("/verify", validateToken, async (req, res) => {
   const userId = req.body.userId;
   const token = req.body.token;
 
-  let decoded = jwt.decode(token, process.env.TOKEN_KEY, (err, decoded) => {
-    if (err) {
-      return res.status(201).json({
-        isValid: false,
-      });
-    }
-  });
+  // let decoded = jwt.decode(token, process.env.TOKEN_KEY, (err, decoded) => {
+  //   if (err) {
+  //     return res.status(201).json({
+  //       isValid: false,
+  //     });
+  //   }
+  // });
+
+  let decoded = req.decodedToken;
 
   if (decoded.userId !== userId) {
     return res.status(201).json({

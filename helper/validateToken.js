@@ -17,17 +17,19 @@ function validateToken(req, res, next) {
           isValid: false,
         });
       } else {
-        accessGranted = true;
+        // accessGranted = true;
+        req.decodedToken = decoded;
+        next();
       }
     });
   }
 
-  if (!accessGranted) {
-    res.statusMessage = "No authentication.";
-    return res.status(201).json({
-      isValid: false,
-    });
-  }
+  // if (!accessGranted) {
+  //   res.statusMessage = "No authentication.";
+  //   return res.status(201).json({
+  //     isValid: false,
+  //   });
+  // }
 
   next();
 }
