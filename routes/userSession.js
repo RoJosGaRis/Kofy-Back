@@ -99,37 +99,20 @@ router.post("/verify", validateToken, async (req, res) => {
   let decoded = jwt.decode(token, process.env.TOKEN_KEY, (err, decoded) => {
     if (err) {
       return res.status(401).json({
-        isValid: false
+        isValid: false,
       });
     }
   });
 
-
   if (decoded.userId !== userId) {
     return res.status(401).json({
-      isValid: false
+      isValid: false,
     });
   } else {
     return res.status(200).json({
-      isValid: true
+      isValid: true,
     });
   }
 });
-
-// router.post("/profile", validateToken, async (req, res) => {
-//   user = await prisma.logins.findUnique({
-//     where: {
-//       id: Number(req.body.userId),
-//     },
-//   });
-
-//   res.status(201).json({
-//     success: true,
-//     data: {
-//       userId: user.userId,
-//       email: user.email,
-//     },
-//   });
-// });
 
 module.exports = router;
