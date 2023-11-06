@@ -98,18 +98,18 @@ router.post("/verify", validateToken, async (req, res) => {
 
   let decoded = jwt.decode(token, process.env.TOKEN_KEY, (err, decoded) => {
     if (err) {
-      return res.status(401).json({
+      return res.status(201).json({
         isValid: false,
       });
     }
   });
 
   if (decoded.userId !== userId) {
-    return res.status(401).json({
+    return res.status(201).json({
       isValid: false,
     });
   } else {
-    return res.status(200).json({
+    return res.status(201).json({
       isValid: true,
     });
   }

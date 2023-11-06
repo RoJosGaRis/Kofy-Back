@@ -2,7 +2,7 @@ const jwt = require("jsonwebtoken");
 
 function validateToken(req, res, next) {
   let accessGranted = false;
-  let token = req.get("authorization")
+  let token = req.get("authorization");
   token = token.split(" ")[1];
 
   if (!token) {
@@ -24,7 +24,9 @@ function validateToken(req, res, next) {
 
   if (!accessGranted) {
     res.statusMessage = "No authentication.";
-    return res.status(401).end();
+    return res.status(201).json({
+      isValid: false,
+    });
   }
 
   next();
