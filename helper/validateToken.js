@@ -18,7 +18,7 @@ function validateToken(req, res, next) {
         });
       } else {
         // accessGranted = true;
-        req.decodedToken = decoded;
+        // req.decodedToken = decoded;
         next();
       }
     });
@@ -31,7 +31,7 @@ function validateToken(req, res, next) {
   //   });
   // }
 
-  next();
+  // next();
 }
 
 module.exports = validateToken;
