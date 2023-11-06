@@ -106,7 +106,7 @@ router.post("/verify", validateToken, async (req, res) => {
 
   let decoded = req.decodedToken;
 
-  if (decoded.userId !== userId) {
+  if (!decoded || decoded.userId !== userId) {
     return res.status(201).json({
       isValid: false,
     });
