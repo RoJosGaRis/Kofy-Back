@@ -14,7 +14,7 @@ router.post("/getProfile", validateToken, async (req, res) => {
   try {
     const existingUser = await prisma.logins.findUnique({
       where: {
-        email: email,
+        login_id: userId,
       },
     });
 
