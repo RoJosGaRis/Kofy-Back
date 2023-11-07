@@ -12,7 +12,7 @@ router.post("/getProfile", validateToken, async (req, res) => {
 
   let existingUser;
   try {
-    const existingUser = await prisma.logins.findUnique({
+    const existingUser = await prisma.profiles.findUnique({
       where: {
         login_id: userId,
       },
