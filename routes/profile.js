@@ -4,8 +4,8 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const validateToken = require("../helper/validateToken");
 
-const router = express.Router();
 const prisma = new PrismaClient();
+const router = express.Router();
 
 router.post("/getProfile", validateToken, async (req, res) => {
   const { userId } = req.body;
