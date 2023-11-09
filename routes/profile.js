@@ -7,6 +7,24 @@ const validateToken = require("../helper/validateToken");
 const prisma = new PrismaClient();
 const router = express.Router();
 
+const translateProfile = (user) => {
+  newUser = {
+    userId: user.login_id,
+    names: user.names,
+    lastNames: user.last_names,
+    birthday: user.birthday,
+    gender: user.gender,
+    profilePicture: user.profile_picture,
+    bloodType: user.blood_type,
+    height: user.height,
+    weight: user.weight,
+    allergies: user.allergies,
+    diseases: user.diseases,
+  };
+
+  return newUser;
+};
+
 router.post("/getProfile", validateToken, async (req, res) => {
   const { userId } = req.body;
 
@@ -22,7 +40,7 @@ router.post("/getProfile", validateToken, async (req, res) => {
       throw new Error("User not found");
     }
 
-    res.send(existingUser);
+    res.send(translateProfile(existingUser));
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
@@ -76,7 +94,7 @@ router.post("/setProfile", validateToken, async (req, res) => {
           diseases,
         },
       });
-      res.status(201).send(newUser);
+      res.status(201).send(translateProfile(newUser));
     }
   } catch (error) {
     res.status(400).json({ message: error.message });
