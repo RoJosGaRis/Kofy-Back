@@ -7,6 +7,8 @@ const validateToken = require("../helper/validateToken");
 const router = express.Router();
 const prisma = new PrismaClient();
 
+const tokenExpirationTime = "7d";
+
 router.post("/register", async (req, res) => {
   const { username, email, password, type } = req.body;
   try {
@@ -38,7 +40,7 @@ router.post("/register", async (req, res) => {
         const token = jwt.sign(
           { user_id: newUser.id, email },
           process.env.TOKEN_KEY,
-          { expiresIn: "2m" }
+          { expiresIn: tokenExpirationTime }
         );
         res.status(201).send({ token: token, userId: newUser.id });
       })
@@ -76,7 +78,7 @@ router.post("/login", async (req, res) => {
       token = jwt.sign(
         { userId: existingUser.id, email: existingUser.email },
         process.env.TOKEN_KEY,
-        { expiresIn: "2m" }
+        { expiresIn: tokenExpirationTime }
       );
     } catch (err) {
       console.log(err);
