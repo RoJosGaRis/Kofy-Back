@@ -34,7 +34,19 @@ model profiles {
 }
 
 model card_collections {
-  id   Int    @id @default(autoincrement())
-  name String @unique(map: "name_unique") @db.VarChar(25)
-  icon String @db.VarChar(50)
+  id    Int    @id @default(autoincrement())
+  name  String @unique(map: "name_unique") @db.VarChar(25)
+  icon  String @db.VarChar(50)
+  cards cards?
+}
+
+model cards {
+  id               Int              @id @default(autoincrement())
+  collection_index Int
+  index            Int
+  content          String           @db.VarChar(250)
+  is_video         Boolean
+  video_link       String?          @default("") @db.VarChar(100)
+  image_link       String?          @default("") @db.VarChar(100)
+  card_collections card_collections @relation(fields: [id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "collection_fkey")
 }

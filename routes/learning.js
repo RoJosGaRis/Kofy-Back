@@ -22,12 +22,28 @@ router.get("/getCardCollections", async (req, res) => {
 router.post("/getCardCollections", async (req, res) => {
   id = req.body.id;
 
-  const collections = await prisma.card_collections.findUnique({
+  let fullUrl = req.protocol + "://" + req.get("host") + "/images";
+  const cards = await prisma.cards.findMany({
     where: {
-      id: parseInt(id),
+      collection_index: parseInt(id),
+    },
+    select: {
+      id: true,
+      index: true,
+      content: true,
+      is_video: true,
+      video_link: true,
+      image_link: true,
     },
   });
-  res.send(collections);
+
+  cards.forEach((element) => {
+    currIcon = element.icon;
+    element.image_link = fullUrl + element.image_link;
+    // console.log(fullUrl + element.icon);
+  });
+
+  res.send(cards);
 });
 
 module.exports = router;
