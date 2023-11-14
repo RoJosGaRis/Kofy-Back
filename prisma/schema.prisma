@@ -32,3 +32,9 @@ model profiles {
   diseases        String   @db.VarChar(250)
   logins          logins   @relation(fields: [login_id], references: [id], onUpdate: Restrict, map: "loginsId_FK")
 }
+
+model card_collections {
+  id   Int    @id @default(autoincrement())
+  name String @unique(map: "name_unique") @db.VarChar(25)
+  icon String @db.VarChar(50)
+}

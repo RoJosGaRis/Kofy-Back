@@ -1,4 +1,5 @@
 require("dotenv").config();
+const bodyParser = require('body-parser');
 
 const express = require("express");
 // const pg = require("pg");
@@ -8,8 +9,8 @@ const app = express();
 const port = 3000;
 const prisma = new PrismaClient();
 
-app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 // const Pool = pg.Pool;
 
@@ -28,7 +29,13 @@ app.use(express.json());
 
 const userRouter = require("./routes/userSession");
 const profileRouter = require("./routes/profile");
+const speechSessionRouter = require("./routes/speechSession");
+const dashboardRouter = require("./routes/dashboard");
+
 app.use("/user", userRouter);
 app.use("/profile", profileRouter);
+app.use("/speech", speechSessionRouter);
+app.use("/dashboard", dashboardRouter);
+app.use("/images", express.static("images"));
 
 app.listen(port, () => console.log(`Express app running on port ${port}!`));
