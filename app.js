@@ -28,7 +28,7 @@ app.use(express.json());
 
 const userRouter = require("./routes/userSession");
 const profileRouter = require("./routes/profile");
-const learinginRouter = require("./routes/learning");
+const learningRouter = require("./routes/learning");
 
 app.use("/user", userRouter);
 app.use("/profile", profileRouter);
