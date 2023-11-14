@@ -48,6 +48,9 @@ router.post("/getCardCollections", async (req, res) => {
       video_link: true,
       image_link: true,
     },
+    orderBy: {
+      index: "asc",
+    },
   });
 
   cards.forEach((element, index) => {
