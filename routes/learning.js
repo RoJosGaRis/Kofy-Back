@@ -22,7 +22,7 @@ const translateCard = (element, fullUrl) => {
 
 router.get("/getCardCollections", async (req, res) => {
   const collections = await prisma.card_collections.findMany();
-  let fullUrl = req.protocol + "://" + req.get("host") + "/images";
+  let fullUrl = "https://" + req.get("host") + "/images";
 
   collections.forEach((element) => {
     currIcon = element.icon;
@@ -35,7 +35,7 @@ router.get("/getCardCollections", async (req, res) => {
 router.post("/getCardCollections", async (req, res) => {
   id = req.body.id;
 
-  let fullUrl = req.protocol + "://" + req.get("host") + "/images";
+  let fullUrl = "https://" + req.get("host") + "/images";
   const cards = await prisma.cards.findMany({
     where: {
       collection_index: parseInt(id),
