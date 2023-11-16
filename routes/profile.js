@@ -46,7 +46,6 @@ router.post("/getProfile", validateToken, async (req, res) => {
   }
 });
 
-
 router.post("/setProfile", validateToken, async (req, res) => {
   const {
     userId,
@@ -103,7 +102,6 @@ router.post("/setProfile", validateToken, async (req, res) => {
   }
 });
 
-
 router.put("/updateProfile", validateToken, async (req, res) => {
   try {
     const {
@@ -151,5 +149,29 @@ router.put("/updateProfile", validateToken, async (req, res) => {
   }
 });
 
+router.post("/getDoctors", validateToken, async (req, res) => {
+  try {
+    let loginId = req.body.userId;
+    console.log(loginId);
+
+    const profile = await prisma.profiles.findUnique({
+      where: {
+        login_id: parseInt(loginId),
+      },
+    });
+
+    let id = profile.id;
+
+    const doctores = await prisma.doctores.findMany({
+      where: {
+        user_id: parseInt(id),
+      },
+    });
+
+    res.status(200).send(doctores);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+});
 
 module.exports = router;
