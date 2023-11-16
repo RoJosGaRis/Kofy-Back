@@ -168,6 +168,18 @@ router.post("/getDoctors", validateToken, async (req, res) => {
       },
     });
 
+    doctores.forEach((doctor, index) => {
+      const newDoctor = {
+        id: doctor.id,
+        doctorName: doctor.doctor_name,
+        doctorFocus: doctor.doctor_focus,
+        doctorPhone: doctor.doctor_phone,
+        doctorEmail: doctor.doctor_email,
+      };
+
+      doctores[index] = newDoctor;
+    });
+
     res.status(200).send(doctores);
   } catch (err) {
     res.status(400).json({ message: err.message });
