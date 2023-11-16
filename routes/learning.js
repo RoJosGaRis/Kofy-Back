@@ -7,9 +7,9 @@ const validateToken = require("../helper/validateToken");
 const prisma = new PrismaClient();
 const router = express.Router();
 
-const translateCard = (element, fullUrl) => {
+const translateCard = (element, index, fullUrl) => {
   let newElement = {
-    id: element.index,
+    id: index + 1,
     index: element.index,
     content: element.content,
     imageLink: fullUrl + element.image_link,
@@ -88,7 +88,7 @@ router.post("/getCardCollections", async (req, res) => {
   }
 
   cards.forEach((element, index) => {
-    cards[index] = translateCard(element, fullUrl);
+    cards[index] = translateCard(element, index, fullUrl);
     // console.log(fullUrl + element.icon);
   });
 
