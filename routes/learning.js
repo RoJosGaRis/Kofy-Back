@@ -95,4 +95,22 @@ router.post("/getCardCollections", async (req, res) => {
   res.json(cards);
 });
 
+router.post("/editCard", validateToken, async (req, res) => {
+  let card_collection = req.body.card_collection;
+  let card_index = req.body.index;
+
+  const updateCard = await prisma.cards.update({
+    where: {
+      id: id,
+    },
+    data: {
+      index: req.body.index,
+      content: req.body.content,
+      imageLink: req.body.image_link,
+      isVideo: req.body.is_video,
+      videoLink: req.body.video_link,
+    },
+  });
+});
+
 module.exports = router;

@@ -3,6 +3,7 @@ const { PrismaClient } = require("@prisma/client");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const validateToken = require("../helper/validateToken");
+const { route } = require("./learning");
 
 const prisma = new PrismaClient();
 const router = express.Router();
@@ -181,6 +182,46 @@ router.post("/getDoctors", validateToken, async (req, res) => {
     });
 
     res.status(200).send(doctores);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+});
+
+router.put("/getDoctors", validateToken, async (req, res) => {
+  try {
+    let doctor_id = req.body.id;
+
+    const updatedDoctor = await prisma.doctores.update({
+      where: {
+        id: parseInt(doctor_id),
+      },
+      data: {
+        doctor_name: req.body.doctorName,
+        doctor_focus: req.body.doctorFocus,
+        doctor_phone: req.body.doctorPhone,
+        doctor_email: req.body.doctorEmail,
+      },
+    });
+
+    res.status(200).send(updatedDoctor);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+});
+
+router.post("/createDoctor", validateToken, async (req, res) => {
+  try {
+    const newDoctor = await prisma.doctores.create({
+      data: {
+        user_id: parseInt(req.body.userId),
+        doctor_name: req.body.doctorName,
+        doctor_focus: req.body.doctorFocus,
+        doctor_phone: req.body.doctorPhone,
+        doctor_email: req.body.doctorEmail,
+      },
+    });
+
+    res.status(200).send(newDoctor);
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
