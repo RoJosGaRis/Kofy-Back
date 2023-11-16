@@ -34,24 +34,58 @@ router.get("/getCardCollections", async (req, res) => {
 });
 router.post("/getCardCollections", async (req, res) => {
   id = req.body.id;
+  let type = req.body.cardType;
 
   let fullUrl = "https://" + req.get("host") + "/images";
-  const cards = await prisma.cards.findMany({
-    where: {
-      collection_index: parseInt(id),
-    },
-    select: {
-      id: true,
-      index: true,
-      content: true,
-      is_video: true,
-      video_link: true,
-      image_link: true,
-    },
-    orderBy: {
-      index: "asc",
-    },
-  });
+
+  let cards;
+  let typeBool = type == 1;
+
+  console.log(typeBool);
+
+  if (type != 0) {
+    cards = await prisma.cards.findMany({
+      where: {
+        collection_index: parseInt(id),
+        OR: [
+          {
+            index: 1,
+          },
+          {
+            is_video: typeBool,
+          },
+        ],
+      },
+      select: {
+        id: true,
+        index: true,
+        content: true,
+        is_video: true,
+        video_link: true,
+        image_link: true,
+      },
+      orderBy: {
+        index: "asc",
+      },
+    });
+  } else {
+    cards = await prisma.cards.findMany({
+      where: {
+        collection_index: parseInt(id),
+      },
+      select: {
+        id: true,
+        index: true,
+        content: true,
+        is_video: true,
+        video_link: true,
+        image_link: true,
+      },
+      orderBy: {
+        index: "asc",
+      },
+    });
+  }
 
   cards.forEach((element, index) => {
     cards[index] = translateCard(element, fullUrl);
