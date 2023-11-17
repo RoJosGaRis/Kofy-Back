@@ -232,7 +232,7 @@ router.post("/createDoctor", validateToken, async (req, res) => {
     });
 
     const translatedDoctor = {
-      userId: newDoctor.user_id,
+      id: newDoctor.id,
       doctorName: newDoctor.doctor_name,
       doctorFocus: newDoctor.doctor_focus,
       doctorPhone: newDoctor.doctor_phone,

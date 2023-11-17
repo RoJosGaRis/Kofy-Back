@@ -36,28 +36,34 @@ router.post(
 );
 
 router.get("/getCardCollections", async (req, res) => {
-  const collections = await prisma.card_collections.findMany();
-  let fullUrl = "https://" + req.get("host") + "/images";
+  try {
+    const collections = await prisma.card_collections.findMany();
+    let fullUrl = "https://" + req.get("host") + "/images";
 
-  collections.forEach(async (index, element) => {
-    currIcon = element.icon;
-    element.icon = fullUrl + element.icon;
+    collections.forEach(async (index, element) => {
+      currIcon = element.icon;
+      element.icon = fullUrl + element.icon;
 
-    const cards = await prisma.cards.findMany({
-      where: {
-        collection_index: element.id,
-      },
+      const collection_cards = await prisma.cards.findMany({
+        where: {
+          collection_index: element.id,
+        },
+      });
+
+      console.log(collection_cards);
+
+      element = {
+        ...element,
+        cards: collection_cards,
+      };
+
+      // collections[index] = newElement;
+      // console.log(fullUrl + element.icon);
     });
-
-    collections[index] = {
-      ...element,
-      cards: cards,
-    };
-
-    // console.log(fullUrl + element.icon);
-  });
-
-  res.send(collections);
+    res.send(collections);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
 });
 
 module.exports = router;
