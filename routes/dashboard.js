@@ -8,11 +8,11 @@ const multer = require("multer");
 const prisma = new PrismaClient();
 const router = express.Router();
 
-let fs = require('fs-extra');
+let fs = require("fs-extra");
 
 let storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    const folderName = req.params.folder || '';
+    const folderName = req.params.folder || "";
     const destination = `./images/${folderName}`;
     fs.mkdirsSync(destination);
     cb(null, destination);
@@ -24,11 +24,46 @@ let storage = multer.diskStorage({
 
 let upload = multer({ storage: storage });
 
-router.post("/uploadImage/:folder", upload.single('image'), async (req, res) => {
-  res.json({
-    success: true,
-    image: req.file
-  });
+router.post(
+  "/uploadImage/:folder",
+  upload.single("image"),
+  async (req, res) => {
+    res.json({
+      success: true,
+      image: req.file,
+    });
+  }
+);
+
+router.get("/getCardCollections", async (req, res) => {
+  try {
+    const collections = await prisma.card_collections.findMany();
+    let fullUrl = "https://" + req.get("host") + "/images";
+
+    collections.forEach(async (index, element) => {
+      currIcon = element.icon;
+      element.icon = fullUrl + element.icon;
+
+      const collection_cards = await prisma.cards.findMany({
+        where: {
+          collection_index: element.id,
+        },
+      });
+
+      console.log(collection_cards);
+
+      element = {
+        ...element,
+        cards: collection_cards,
+      };
+
+      // collections[index] = newElement;
+      // console.log(fullUrl + element.icon);
+    });
+    res.send(collections);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
 });
 
 module.exports = router;
