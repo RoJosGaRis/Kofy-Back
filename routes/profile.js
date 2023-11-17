@@ -211,9 +211,19 @@ router.put("/getDoctors", validateToken, async (req, res) => {
 
 router.post("/createDoctor", validateToken, async (req, res) => {
   try {
+    let profileId = req.body.userId;
+
+    const profile = await prisma.profiles.findUnique({
+      where: {
+        login_id: parseInt(profileId),
+      },
+    });
+
+    let id = profile.id;
+
     const newDoctor = await prisma.doctores.create({
       data: {
-        user_id: parseInt(req.body.userId),
+        user_id: parseInt(id),
         doctor_name: req.body.doctorName,
         doctor_focus: req.body.doctorFocus,
         doctor_phone: req.body.doctorPhone,

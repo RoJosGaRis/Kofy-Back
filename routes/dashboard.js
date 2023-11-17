@@ -35,6 +35,17 @@ router.post(
   }
 );
 
-// router.post("/getCard")
+router.get("/getCardCollections", async (req, res) => {
+  const collections = await prisma.card_collections.findMany();
+  let fullUrl = "https://" + req.get("host") + "/images";
+
+  collections.forEach((element) => {
+    currIcon = element.icon;
+    element.icon = fullUrl + element.icon;
+    // console.log(fullUrl + element.icon);
+  });
+
+  res.send(collections);
+});
 
 module.exports = router;
