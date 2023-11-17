@@ -203,7 +203,15 @@ router.put("/createDoctor", validateToken, async (req, res) => {
       },
     });
 
-    res.status(200).send(updatedDoctor);
+    const translatedDoctor = {
+      id: updatedDoctor.id,
+      doctorName: updatedDoctor.doctor_name,
+      doctorFocus: updatedDoctor.doctor_focus,
+      doctorPhone: updatedDoctor.doctor_phone,
+      doctorEmail: updatedDoctor.doctor_email,
+    };
+
+    res.status(200).send(translatedDoctor);
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
