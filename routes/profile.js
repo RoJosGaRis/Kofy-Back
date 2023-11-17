@@ -187,7 +187,7 @@ router.post("/getDoctors", validateToken, async (req, res) => {
   }
 });
 
-router.put("/getDoctors", validateToken, async (req, res) => {
+router.put("/createDoctor", validateToken, async (req, res) => {
   try {
     let doctor_id = req.body.id;
 
@@ -231,7 +231,15 @@ router.post("/createDoctor", validateToken, async (req, res) => {
       },
     });
 
-    res.status(200).send(newDoctor);
+    const translatedDoctor = {
+      userId: newDoctor.user_id,
+      doctorName: newDoctor.doctor_name,
+      doctorFocus: newDoctor.doctor_focus,
+      doctorPhone: newDoctor.doctor_phone,
+      doctorEmail: newDoctor.doctor_email,
+    };
+
+    res.status(200).send(translatedDoctor);
   } catch (err) {
     res.status(400).json({ message: err.message });
   }

@@ -39,9 +39,21 @@ router.get("/getCardCollections", async (req, res) => {
   const collections = await prisma.card_collections.findMany();
   let fullUrl = "https://" + req.get("host") + "/images";
 
-  collections.forEach((element) => {
+  collections.forEach(async (index, element) => {
     currIcon = element.icon;
     element.icon = fullUrl + element.icon;
+
+    const cards = await prisma.cards.findMany({
+      where: {
+        collection_index: element.id,
+      },
+    });
+
+    collections[index] = {
+      ...element,
+      cards: cards,
+    };
+
     // console.log(fullUrl + element.icon);
   });
 
