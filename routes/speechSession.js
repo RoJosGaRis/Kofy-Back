@@ -7,7 +7,7 @@ const validateToken = require("../helper/validateToken");
 const router = express.Router();
 const prisma = new PrismaClient();
 
-router.post("/summary", validateToken, async (req, res) => { 
+router.post("/summary", validateToken, async (req, res) => {
   es.status(200).json({ message: "NICE" });
 });
 
