@@ -27,7 +27,6 @@ router.get("/getCardCollections", async (req, res) => {
   collections.forEach((element) => {
     currIcon = element.icon;
     element.icon = fullUrl + element.icon;
-    // console.log(fullUrl + element.icon);
   });
 
   res.send(collections);
@@ -40,8 +39,6 @@ router.post("/getCardCollections", async (req, res) => {
 
   let cards;
   let typeBool = type == 1;
-
-  console.log(typeBool);
 
   if (type != 0) {
     cards = await prisma.cards.findMany({
@@ -89,7 +86,6 @@ router.post("/getCardCollections", async (req, res) => {
 
   cards.forEach((element, index) => {
     cards[index] = translateCard(element, index, fullUrl);
-    // console.log(fullUrl + element.icon);
   });
 
   res.json(cards);
