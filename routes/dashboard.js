@@ -9,6 +9,7 @@ const prisma = new PrismaClient();
 const router = express.Router();
 
 let fs = require("fs-extra");
+const validateToken = require("../helper/validateToken");
 
 let storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -37,31 +38,86 @@ router.post(
 
 router.get("/getCardCollections", async (req, res) => {
   try {
-    const collections = await prisma.card_collections.findMany();
+    let collections = await prisma.card_collections.findMany();
+    let newCollections = [];
     let fullUrl = "https://" + req.get("host") + "/images";
 
-    collections.forEach(async (index, element) => {
-      currIcon = element.icon;
-      element.icon = fullUrl + element.icon;
+    for (let index = 0; index < collections.length; index++) {
+      currIcon = collections[index].icon;
+      collections[index].icon = fullUrl + collections[index].icon;
+      // console.log("COllECTION: " + element);
 
       const collection_cards = await prisma.cards.findMany({
         where: {
-          collection_index: element.id,
+          collection_index: collections[index].id,
+        },
+        orderBy: {
+          index: "asc",
         },
       });
 
-      element = {
-        ...element,
+      // console.log("Element ID" + element.id);
+      // console.log(collection_cards);
+
+      let newElement = {
+        ...collections[index],
         cards: collection_cards,
       };
 
-      // collections[index] = newElement;
+      // console.log(newElement);
+      collections[index] = newElement;
+      // console.log(collections[index]);
       // console.log(fullUrl + element.icon);
-    });
+    }
+    // console.log(newCollections);
     res.send(collections);
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
 });
 
+router.post("/updateCard", validateToken, async (req, res) => {
+  try {
+    let queryId = req.body.id;
+
+    const queryCard = await prisma.cards.update({
+      where: {
+        id: parseInt(queryId),
+      },
+      data: {
+        content: req.body.content,
+        is_video: req.body.is_video === "true" ? true : false,
+        video_link: req.body.video_link,
+        image_link: req.body.image_link,
+      },
+    });
+
+    res.send(queryCard);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+});
+
 module.exports = router;
+
+/*
+Tarjetas
+
+- Obtener >  info de todas tarjetas
+- Editar >  Info de tarjetas TODO
+- Crear una tarjeta nueva TODO
+
+Crear una cuenta administrador
+
+- nombre, apellido, edad, correo, usuario, contraseña, celular, calle, código postal, ciudad - TODO
+
+Información de administradores
+
+- Obtener > info de los usuarios administradores  - TODO
+
+Informacion usuario
+
+- Editar y obtener > Sesion de escucha - TODO
+- Editar y obtener > Cita medica - TODO
+- Obtener > Info usuario (peso, estatura, enfermedades, etc) - TODO
+*/

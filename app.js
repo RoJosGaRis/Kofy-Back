@@ -1,5 +1,5 @@
 require("dotenv").config();
-const bodyParser = require('body-parser');
+const bodyParser = require("body-parser");
 
 const express = require("express");
 // const pg = require("pg");
@@ -37,8 +37,8 @@ app.use("/user", userRouter);
 app.use("/profile", profileRouter);
 app.use("/speech", speechSessionRouter);
 app.use("/dashboard", dashboardRouter);
-app.use("/images", express.static("images"));
 app.use("/learning", learningRouter);
+app.use("/images", express.static("images"));
 
 app.use("/user", userRouter);
 app.use("/profile", profileRouter);
