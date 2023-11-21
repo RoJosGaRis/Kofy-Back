@@ -50,8 +50,6 @@ router.get("/getCardCollections", async (req, res) => {
         },
       });
 
-      console.log(collection_cards);
-
       element = {
         ...element,
         cards: collection_cards,

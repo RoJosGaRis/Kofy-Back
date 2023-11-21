@@ -153,7 +153,6 @@ router.put("/updateProfile", validateToken, async (req, res) => {
 router.post("/getDoctors", validateToken, async (req, res) => {
   try {
     let loginId = req.body.userId;
-    console.log(loginId);
 
     const profile = await prisma.profiles.findUnique({
       where: {
