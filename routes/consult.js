@@ -75,26 +75,32 @@ router.post("/reminders", validateToken, async (req, res) => {
 
 router.post("/createSpeechSession", validateToken, async (req, res) => {
   try {
-    sessionDate = req.body.sessionDate;
+    let flag = true;
+    let newAccess;
+    while (flag) {
+      newAccess = createAccess(6);
+      console.log(newAccess);
+      const oldAccess = await prisma.speech_sessions.findFirst({
+        where: {
+          access_id: newAccess,
+        },
+      });
 
-    var year = sessionDate.split("-")[0];
-    var month = sessionDate.split("-")[1];
-    var day = sessionDate.split("-")[2];
-
-    var newDate = new Date(year, month - 1, day);
-
+      if (oldAccess) {
+        flag = true;
+        console.log("true");
+      } else {
+        flag = false;
+        console.log("false");
+      }
+    }
+    console.log("NewAccess: " + newAccess);
     const newSession = await prisma.speech_sessions.create({
       data: {
-        access_id: createAccess(6),
-        session_name: req.body.sessionName,
-        session_description: req.body.sessionDescription,
-        session_doctor: parseInt(req.body.sessionDoctor),
-        session_date: newDate,
-        color: parseInt(req.body.color),
+        access_id: newAccess,
         current_text: "",
       },
       select: {
-        id: true,
         access_id: true,
       },
     });
@@ -104,5 +110,7 @@ router.post("/createSpeechSession", validateToken, async (req, res) => {
     res.status(400).json({ message: err.message });
   }
 });
+
+router.post("/updateSpeechSession", validateToken, async (req, res) => {});
 
 module.exports = router;

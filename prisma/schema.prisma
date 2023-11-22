@@ -53,24 +53,17 @@ model cards {
 }
 
 model doctores {
-  id              Int               @id @default(autoincrement())
-  user_id         Int
-  doctor_name     String            @db.VarChar(50)
-  doctor_focus    String            @db.VarChar(50)
-  doctor_phone    String            @db.VarChar(15)
-  doctor_email    String            @db.VarChar(50)
-  profiles        profiles          @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "user_doctor_FKEY")
-  speech_sessions speech_sessions[]
+  id           Int      @id @default(autoincrement())
+  user_id      Int
+  doctor_name  String   @db.VarChar(50)
+  doctor_focus String   @db.VarChar(50)
+  doctor_phone String   @db.VarChar(15)
+  doctor_email String   @db.VarChar(50)
+  profiles     profiles @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "user_doctor_FKEY")
 }
 
 model speech_sessions {
-  id                  Int      @id(map: "speeck_sessions_pkey") @default(autoincrement())
-  access_id           String   @db.VarChar(7)
-  session_name        String   @db.VarChar(50)
-  session_description String   @db.VarChar(250)
-  session_doctor      Int
-  session_date        DateTime @db.Date
-  color               Int
-  current_text        String
-  doctores            doctores @relation(fields: [session_doctor], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "session_doctor_FKEY")
+  id           Int     @id(map: "speeck_sessions_pkey") @default(autoincrement())
+  access_id    String  @db.VarChar(7)
+  current_text String?
 }
