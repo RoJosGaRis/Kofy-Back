@@ -75,14 +75,23 @@ router.post("/reminders", validateToken, async (req, res) => {
 
 router.post("/createSpeechSession", validateToken, async (req, res) => {
   try {
+    sessionDate = req.body.sessionDate;
+
+    var year = sessionDate.split("-")[0];
+    var month = sessionDate.split("-")[1];
+    var day = sessionDate.split("-")[2];
+
+    var newDate = new Date(year, month - 1, day);
+
     const newSession = await prisma.speech_sessions.create({
       data: {
         access_id: createAccess(6),
         session_name: req.body.sessionName,
         session_description: req.body.sessionDescription,
-        session_doctor: req.body.sessionDoctor,
-        session_date: req.body.sessionDate,
-        color: req.body.color,
+        session_doctor: parseInt(req.body.sessionDoctor),
+        session_date: newDate,
+        color: parseInt(req.body.color),
+        current_text: "",
       },
       select: {
         id: true,
