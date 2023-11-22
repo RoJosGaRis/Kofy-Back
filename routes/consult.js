@@ -34,21 +34,34 @@ const getRemindersInstructions = `
 `;
 
 router.post("/summary", validateToken, async (req, res) => {
-  const completion = await openai.chat.completions.create({
-    messages: [
-      { role: "system", content: speechSessionInstructions },
-      { role: "user", content: req.body.session },
-    ],
-    model: "gpt-3.5-turbo-1106",
-    response_format: { type: "json_object" },
-  });
+  try {
+    const completion = await openai.chat.completions.create({
+      messages: [
+        { role: "system", content: speechSessionInstructions },
+        { role: "user", content: req.body.session },
+      ],
+      model: "gpt-3.5-turbo-1106",
+      response_format: { type: "json_object" },
+    });
 
-  req.body = {
-    success: true,
-    completion: completion.choices[0],
-  };
+    // req.body = {
+    //   success: true,
+    //   completion: completion.choices[0],
+    // };
 
-  res.json(req.body);
+    const session = await prisma.speech_sessions.updateMany({
+      where: {
+        access_id: req.body.accessId,
+      },
+      data: {
+        current_text: completion.choices[0].message.content,
+      },
+    });
+
+    res.status(200).send({ message: "ok" });
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
 });
 
 router.post("/reminders", validateToken, async (req, res) => {
@@ -106,7 +119,5 @@ router.post("/createSpeechSession", validateToken, async (req, res) => {
     res.status(400).json({ message: err.message });
   }
 });
-
-router.post("/updateSpeechSession", validateToken, async (req, res) => {});
 
 module.exports = router;
