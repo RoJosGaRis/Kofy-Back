@@ -79,7 +79,6 @@ router.post("/createSpeechSession", validateToken, async (req, res) => {
     let newAccess;
     while (flag) {
       newAccess = createAccess(6);
-      console.log(newAccess);
       const oldAccess = await prisma.speech_sessions.findFirst({
         where: {
           access_id: newAccess,
@@ -88,13 +87,10 @@ router.post("/createSpeechSession", validateToken, async (req, res) => {
 
       if (oldAccess) {
         flag = true;
-        console.log("true");
       } else {
         flag = false;
-        console.log("false");
       }
     }
-    console.log("NewAccess: " + newAccess);
     const newSession = await prisma.speech_sessions.create({
       data: {
         access_id: newAccess,
