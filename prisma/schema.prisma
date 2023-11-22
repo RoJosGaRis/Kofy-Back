@@ -71,5 +71,6 @@ model speech_sessions {
   session_doctor      Int
   session_date        DateTime @db.Date
   color               Int
+  current_text        String
   doctores            doctores @relation(fields: [session_doctor], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "session_doctor_FKEY")
 }

@@ -4,6 +4,7 @@ const { PrismaClient } = require("@prisma/client");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const validateToken = require("../helper/validateToken");
+const createAccess = require("../helper/createAccess.js");
 
 const openai = new OpenAI();
 
@@ -74,6 +75,22 @@ router.post("/reminders", validateToken, async (req, res) => {
 
 router.post("/createSpeechSession", validateToken, async (req, res) => {
   try {
+    const newSession = await prisma.speech_sessions.create({
+      data: {
+        access_id: createAccess(6),
+        session_name: req.body.sessionName,
+        session_description: req.body.sessionDescription,
+        session_doctor: req.body.sessionDoctor,
+        session_date: req.body.sessionDate,
+        color: req.body.color,
+      },
+      select: {
+        id: true,
+        access_id: true,
+      },
+    });
+
+    res.status(200).send(newSession);
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
