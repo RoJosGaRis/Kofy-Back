@@ -30,12 +30,12 @@ app.use(express.urlencoded({ extended: true }));
 const userRouter = require("./routes/userSession");
 const profileRouter = require("./routes/profile");
 const learningRouter = require("./routes/learning");
-const speechSessionRouter = require("./routes/speechSession");
+const consultRouter = require("./routes/consult");
 const dashboardRouter = require("./routes/dashboard");
 
 app.use("/user", userRouter);
 app.use("/profile", profileRouter);
-app.use("/speech", speechSessionRouter);
+app.use("/consult", consultRouter);
 app.use("/dashboard", dashboardRouter);
 app.use("/learning", learningRouter);
 app.use("/images", express.static("images"));
