@@ -51,21 +51,32 @@ router.post("/summary", validateToken, async (req, res) => {
 });
 
 router.post("/reminders", validateToken, async (req, res) => {
-  const completion = await openai.chat.completions.create({
-    messages: [
-      { role: "system", content: getRemindersInstructions },
-      { role: "user", content: req.body.prescription },
-    ],
-    model: "gpt-3.5-turbo-1106",
-    response_format: { type: "json_object" },
-  });
+  try {
+    const completion = await openai.chat.completions.create({
+      messages: [
+        { role: "system", content: getRemindersInstructions },
+        { role: "user", content: req.body.prescription },
+      ],
+      model: "gpt-3.5-turbo-1106",
+      response_format: { type: "json_object" },
+    });
 
-  req.body = {
-    success: true,
-    completion: completion.choices[0],
-  };
+    req.body = {
+      success: true,
+      completion: completion.choices[0],
+    };
 
-  res.json(req.body.completion.message.content);
+    res.json(req.body.completion.message.content);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+});
+
+router.post("/createSpeechSession", validateToken, async (req, res) => {
+  try {
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
 });
 
 module.exports = router;
