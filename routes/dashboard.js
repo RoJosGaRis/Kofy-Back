@@ -98,12 +98,15 @@ router.post("/updateCard", validateToken, async (req, res) => {
   }
 });
 
-router.post("/getSummary", validateToken, async (req, res) => {
+router.post("/getSummary", async (req, res) => {
   try {
-    console.log(JSON.stringify(req.body.resultado));
+    // console.log(JSON.stringify(req.body.resultado));
+    accessId = req.body.accessId;
+    let validateId = "0" + accessId.substring(1, accessId.length);
+
     const session = await prisma.speech_sessions.findFirst({
       where: {
-        access_id: req.body.accessId,
+        access_id: validateId,
       },
       select: {
         current_text: true,
