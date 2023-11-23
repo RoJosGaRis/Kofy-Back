@@ -122,7 +122,7 @@ router.post("/createSpeechSession", validateToken, async (req, res) => {
 
 router.post("/getSummary", validateToken, async (req, res) => {
   try {
-    requestId = req.body.requestId;
+    requestId = req.body.accessId;
     validatedId = "1" + requestId.substring(1, requestId.length);
 
     const session = await prisma.speech_sessions.findFirst({
