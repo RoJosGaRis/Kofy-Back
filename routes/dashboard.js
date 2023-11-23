@@ -100,6 +100,7 @@ router.post("/updateCard", validateToken, async (req, res) => {
 
 router.post("/getSummary", validateToken, async (req, res) => {
   try {
+    console.log(JSON.stringify(req.body.resultado));
     const session = await prisma.speech_sessions.findFirst({
       where: {
         access_id: req.body.accessId,
@@ -110,6 +111,23 @@ router.post("/getSummary", validateToken, async (req, res) => {
     });
 
     res.send(JSON.parse(session.current_text));
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+});
+
+router.post("/verifySummary", validateToken, async (req, res) => {
+  try {
+    const session = await prisma.speech_sessions.updateMany({
+      where: {
+        access_id: req.body.accessId,
+      },
+      data: {
+        current_text: JSON.stringify(req.body.session),
+      },
+    });
+
+    res.status(200).send({ message: "ok" });
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
