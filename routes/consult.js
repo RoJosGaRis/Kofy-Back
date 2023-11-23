@@ -154,6 +154,25 @@ router.post("/getSummary", validateToken, async (req, res) => {
 
 router.post("/endSession", validateToken, async (req, res) => {
   try {
+    requestId = req.body.requestId;
+    validatedId = "1" + requestId.substring(1, requestId.length);
+    finishedId = "2" + requestId.substring(1, requestId.length);
+
+    const session = await prisma.speech_sessions.updateMany({
+      where: {
+        access_id: validatedId,
+      },
+      data: {
+        access_id: finishedId,
+        current_text: " ",
+      },
+    });
+
+    if (session) {
+      res.status(200).json({ message: "ok" });
+    } else {
+      res.status(200).json({ message: "not ok" });
+    }
   } catch (err) {
     res.status(400).send();
   }
