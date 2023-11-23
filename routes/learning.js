@@ -10,7 +10,7 @@ const router = express.Router();
 const translateCard = (element, index, fullUrl) => {
   let newElement = {
     id: index + 1,
-    index: element.index,
+    index: index + 1,
     content: element.content,
     imageLink: fullUrl + element.image_link,
     isVideo: element.is_video,
