@@ -120,4 +120,38 @@ router.post("/createSpeechSession", validateToken, async (req, res) => {
   }
 });
 
+router.post("/getSummary", validateToken, async (req, res) => {
+  try {
+    requestId = req.body.requestId;
+    validatedId = "1" + requestId.substring(1, requestId.length);
+
+    const session = await prisma.speech_sessions.findFirst({
+      where: {
+        access_id: validatedId,
+      },
+      select: {
+        current_text: true,
+      },
+    });
+
+    if (session) {
+      result = JSON.parse(session.current_text);
+
+      res.json({
+        isValid: true,
+        result: result.resultado,
+      });
+    } else {
+      res.json({
+        isValid: false,
+        result: [],
+      });
+    }
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+});
+
+router.post("/endSession", validateToken, async (req, res) => {});
+
 module.exports = router;
