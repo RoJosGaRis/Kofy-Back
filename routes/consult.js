@@ -27,9 +27,9 @@ const getRemindersInstructions = `
   Tu trabajp es tomar un texto escaneado de la recta e interpretar la información,
   obteniendo los medicamentos o tratamientos recetados. Omite la información que no hace
   sentido o que hace referencia al paciente o consultorio. Los intervalos de tiempo, en caso de tener uno, debes de retornar solamente un número que sea equivalente a la cantidad de horas de ese intervalo, sin ningún texto. En caso de no tener un intervalo, regresa un string vacío.
-  También deberá regresar una explicación sencilla, con puntos claves 
+  También deberá regresar una explicación sencilla, con puntos claves sobre cada medicamento que serían relevantes para una persona que regularmente no tiene experiencia con nada médico, como su uso adecuado, para qué suele recetarse, entre otros. Deberás regresar esos recodatorios individuales, concisos y relevantes.
   Lo que recuperes, deber regresarlo en un objeto JSON en el siguiente formato:
-  { "recordatorios": [{nombre: "NOMBRE", dosis: "DOSIS", intervalo: "INTERVALO"}, {nombre: "NOMBRE2", dosis: "DOSIS2", intervalo: "INTERVALO"}, ...]}
+  { "recordatorios": [{nombre: "NOMBRE", dosis: "DOSIS", intervalo: "INTERVALO"}, {nombre: "NOMBRE2", dosis: "DOSIS2", intervalo: "INTERVALO"}, ...], "explicaciones" : [{nombre: "NOMBRE DEL MEDICAMENTO", puntosClave: ["PUNTO 1", "PUNTO 2", ...]}, {nombre: "NOMBRE DEL MEDICAMENTO 2", puntosClave: ["PUNTO 1", "PUNTO 2", ...]}]}
   
 `;
 
@@ -80,7 +80,7 @@ router.post("/reminders", validateToken, async (req, res) => {
       completion: completion.choices[0],
     };
 
-    res.json(req.body.completion.message.content);
+    res.json(JSON.parse(req.body.completion.message.content));
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
