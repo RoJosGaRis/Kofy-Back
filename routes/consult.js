@@ -154,7 +154,7 @@ router.post("/getSummary", validateToken, async (req, res) => {
 
 router.post("/endSession", validateToken, async (req, res) => {
   try {
-    requestId = req.body.requestId;
+    requestId = req.body.accessId;
     validatedId = "1" + requestId.substring(1, requestId.length);
     finishedId = "2" + requestId.substring(1, requestId.length);
 
