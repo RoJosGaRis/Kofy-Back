@@ -121,6 +121,8 @@ router.post("/getSummary", async (req, res) => {
 
 router.post("/verifySummary", async (req, res) => {
   try {
+    console.log("REQUEST BODY");
+    console.log(req.body);
     const session = await prisma.speech_sessions.updateMany({
       where: {
         access_id: req.body.accessId,
