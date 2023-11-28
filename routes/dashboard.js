@@ -136,6 +136,7 @@ router.post("/verifySummary", async (req, res) => {
     res.header("Access-Control-Allow-Origin", "https://kofy.vercel.app");
     res.status(200).send({ message: "ok" });
   } catch (err) {
+    res.header("Access-Control-Allow-Origin", "https://kofy.vercel.app");
     res.status(400).json({ message: err.message });
   }
 });
