@@ -126,6 +126,8 @@ router.post("/verifySummary", async (req, res) => {
         access_id: req.body.accessId,
       },
       data: {
+        access_id:
+          "1" + req.body.accessId.substring(1, req.body.accessId.length),
         current_text: JSON.stringify(req.body.session),
       },
     });
