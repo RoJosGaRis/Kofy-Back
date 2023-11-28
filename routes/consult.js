@@ -31,6 +31,8 @@ const getRemindersInstructions = `
   Lo que recuperes, deber regresarlo en un objeto JSON en el siguiente formato:
   { "reminders": [{drugName: "NOMBRE", dosis: "DOSIS", everyXHours: "INTERVALO"}, {drugName: "NOMBRE2", dosis: "DOSIS2", everyXHours: "INTERVALO"}, ...], "explanations" : [{name: "NOMBRE DEL MEDICAMENTO", explanation: ["PUNTO 1", "PUNTO 2", ...]}, {name: "NOMBRE DEL MEDICAMENTO 2", explanation: ["PUNTO 1", "PUNTO 2", ...]}]}
   
+  Asegúrate de usar correctamente las palabras "reminders", "drugName", "explanations", "name" y "explanation" para los parámetros del JSON.
+
   Toma en cuenta que el paciente tiene las siguientes alergias y enfermedades: 
 `;
 
@@ -69,7 +71,10 @@ router.post("/reminders", validateToken, async (req, res) => {
   try {
     const completion = await openai.chat.completions.create({
       messages: [
-        { role: "system", content: getRemindersInstructions + req.body.patientInfo },
+        {
+          role: "system",
+          content: getRemindersInstructions + req.body.patientInfo,
+        },
         { role: "user", content: req.body.prescription },
       ],
       model: "gpt-3.5-turbo-1106",
