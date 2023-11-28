@@ -119,7 +119,7 @@ router.post("/getSummary", async (req, res) => {
   }
 });
 
-router.post("/verifySummary", validateToken, async (req, res) => {
+router.post("/verifySummary", async (req, res) => {
   try {
     const session = await prisma.speech_sessions.updateMany({
       where: {

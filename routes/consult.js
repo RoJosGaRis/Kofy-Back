@@ -5,6 +5,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const validateToken = require("../helper/validateToken");
 const createAccess = require("../helper/createAccess.js");
+const { encrypt, decrypt } = require("../helper/encryption.js");
 
 const openai = new OpenAI();
 
@@ -187,6 +188,24 @@ router.post("/endSession", validateToken, async (req, res) => {
     }
   } catch (err) {
     res.status(400).send();
+  }
+});
+
+router.post("/encrypt", (req, res) => {
+  try {
+    res.json(encrypt(req.body.phrase));
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+});
+
+router.post("/decrypt", (req, res) => {
+  try {
+    let text = { iv: req.body.iv, encryptedData: req.body.encryptedData };
+
+    res.json(decrypt(text));
+  } catch (err) {
+    res.status(400).json({ message: err.message });
   }
 });
 
