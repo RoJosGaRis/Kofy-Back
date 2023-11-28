@@ -29,8 +29,9 @@ const getRemindersInstructions = `
   sentido o que hace referencia al paciente o consultorio. Los intervalos de tiempo, en caso de tener uno, debes de retornar solamente un número que sea equivalente a la cantidad de horas de ese intervalo, sin ningún texto. En caso de no tener un intervalo, regresa un string vacío.
   También deberá regresar una explicación sencilla, con puntos claves sobre cada medicamento que serían relevantes para una persona que regularmente no tiene experiencia con nada médico, como su uso adecuado, para qué suele recetarse, entre otros. Deberás regresar esos recodatorios individuales, concisos y relevantes.
   Lo que recuperes, deber regresarlo en un objeto JSON en el siguiente formato:
-  { "recordatorios": [{nombre: "NOMBRE", dosis: "DOSIS", intervalo: "INTERVALO"}, {nombre: "NOMBRE2", dosis: "DOSIS2", intervalo: "INTERVALO"}, ...], "explicaciones" : [{nombre: "NOMBRE DEL MEDICAMENTO", puntosClave: ["PUNTO 1", "PUNTO 2", ...]}, {nombre: "NOMBRE DEL MEDICAMENTO 2", puntosClave: ["PUNTO 1", "PUNTO 2", ...]}]}
+  { "reminders": [{drugName: "NOMBRE", dosis: "DOSIS", everyXHours: "INTERVALO"}, {drugName: "NOMBRE2", dosis: "DOSIS2", everyXHours: "INTERVALO"}, ...], "explanations" : [{name: "NOMBRE DEL MEDICAMENTO", explanation: ["PUNTO 1", "PUNTO 2", ...]}, {name: "NOMBRE DEL MEDICAMENTO 2", explanation: ["PUNTO 1", "PUNTO 2", ...]}]}
   
+  Toma en cuenta que el paciente tiene las siguientes alergias y enfermedades: 
 `;
 
 router.post("/summary", validateToken, async (req, res) => {
@@ -68,7 +69,7 @@ router.post("/reminders", validateToken, async (req, res) => {
   try {
     const completion = await openai.chat.completions.create({
       messages: [
-        { role: "system", content: getRemindersInstructions },
+        { role: "system", content: getRemindersInstructions + req.body.patientInfo },
         { role: "user", content: req.body.prescription },
       ],
       model: "gpt-3.5-turbo-1106",
