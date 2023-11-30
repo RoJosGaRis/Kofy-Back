@@ -107,11 +107,11 @@ router.post("/createSpeechSession", validateToken, async (req, res) => {
       newAccess = createAccess(6);
       const oldAccess = await prisma.speech_sessions.findFirst({
         where: {
-          access_id: encrypt(newAccess),
+          access_id: newAccess,
         },
       });
 
-      if (decrypt(oldAccess)) {
+      if (oldAccess) {
         flag = true;
       } else {
         flag = false;
