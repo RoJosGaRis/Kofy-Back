@@ -10,8 +10,8 @@ const prisma = new PrismaClient();
 const tokenExpirationTime = "7d";
 
 router.post("/register", async (req, res) => {
-  const { username, email, password, type } = req.body;
   try {
+    const { username, email, password, type } = req.body;
     const oldUser = await prisma.logins.findUnique({
       where: {
         email: email.toLowerCase(),
@@ -53,10 +53,8 @@ router.post("/register", async (req, res) => {
 });
 
 router.post("/login", async (req, res) => {
-  const { email, password } = req.body;
-
-  let existingUser;
   try {
+    const { email, password } = req.body;
     const existingUser = await prisma.logins.findUnique({
       where: {
         email: email,
@@ -94,28 +92,32 @@ router.post("/login", async (req, res) => {
 });
 
 router.post("/verify", validateToken, async (req, res) => {
-  // verify userId with token
-  const userId = req.body.userId;
-  const token = req.body.token;
+  try {
+    // verify userId with token
+    const userId = req.body.userId;
+    const token = req.body.token;
 
-  let decoded = jwt.decode(token, process.env.TOKEN_KEY, (err, decoded) => {
-    if (err) {
+    let decoded = jwt.decode(token, process.env.TOKEN_KEY, (err, decoded) => {
+      if (err) {
+        return res.status(201).json({
+          isValid: false,
+        });
+      }
+    });
+
+    // let decoded = req.decodedToken;
+
+    if (!decoded || decoded.userId !== userId) {
       return res.status(201).json({
         isValid: false,
       });
+    } else {
+      return res.status(201).json({
+        isValid: true,
+      });
     }
-  });
-
-  // let decoded = req.decodedToken;
-
-  if (!decoded || decoded.userId !== userId) {
-    return res.status(201).json({
-      isValid: false,
-    });
-  } else {
-    return res.status(201).json({
-      isValid: true,
-    });
+  } catch (err) {
+    res.status(400).send({ message: err.message });
   }
 });
 

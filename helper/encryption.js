@@ -15,18 +15,24 @@ const encriptionKey = crypto
 
 //Encrypting text
 function encrypt(text) {
-  encriptionIv = crypto.randomBytes(16);
+  if (text.iv === " ") {
+    text.iv = crypto.randomBytes(16);
+  } else {
+    text.iv = Buffer.from(text.iv, "hex");
+  }
+
+  console.log(text.iv);
 
   let cipher = crypto.createCipheriv(
     "aes-256-cbc",
     Buffer.from(encriptionKey),
-    encriptionIv
+    text.iv
   );
-  let encrypted = cipher.update(text);
+  let encrypted = cipher.update(text.data);
   encrypted = Buffer.concat([encrypted, cipher.final()]);
   return {
-    iv: encriptionIv.toString("hex"),
-    encryptedData: encrypted.toString("hex"),
+    iv: text.iv.toString("hex"),
+    data: encrypted.toString("hex"),
   };
 }
 
@@ -34,7 +40,7 @@ function encrypt(text) {
 function decrypt(text) {
   let iv = Buffer.from(text.iv, "hex");
   console.log("HERE - " + Buffer.from(text.iv, "hex"));
-  let encryptedText = Buffer.from(text.encryptedData, "hex");
+  let encryptedText = Buffer.from(text.data, "hex");
   console.log("HERE2");
   let decipher = crypto.createDecipheriv(
     "aes-256-cbc",

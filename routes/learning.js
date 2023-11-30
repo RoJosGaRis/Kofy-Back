@@ -21,92 +21,104 @@ const translateCard = (element, index, fullUrl) => {
 };
 
 router.get("/getCardCollections", async (req, res) => {
-  const collections = await prisma.card_collections.findMany();
-  let fullUrl = "https://" + req.get("host") + "/images";
+  try {
+    const collections = await prisma.card_collections.findMany();
+    let fullUrl = "https://" + req.get("host") + "/images";
 
-  collections.forEach((element) => {
-    currIcon = element.icon;
-    element.icon = fullUrl + element.icon;
-  });
+    collections.forEach((element) => {
+      currIcon = element.icon;
+      element.icon = fullUrl + element.icon;
+    });
 
-  res.send(collections);
+    res.send(collections);
+  } catch (err) {
+    res.status(400).send({ message: err.message });
+  }
 });
 router.post("/getCardCollections", async (req, res) => {
-  id = req.body.id;
-  let type = req.body.cardType;
+  try {
+    id = req.body.id;
+    let type = req.body.cardType;
 
-  let fullUrl = "https://" + req.get("host") + "/images";
+    let fullUrl = "https://" + req.get("host") + "/images";
 
-  let cards;
-  let typeBool = type == 1;
+    let cards;
+    let typeBool = type == 1;
 
-  if (type != 0) {
-    cards = await prisma.cards.findMany({
-      where: {
-        collection_index: parseInt(id),
-        OR: [
-          {
-            index: 1,
-          },
-          {
-            is_video: typeBool,
-          },
-        ],
-      },
-      select: {
-        id: true,
-        index: true,
-        content: true,
-        is_video: true,
-        video_link: true,
-        image_link: true,
-      },
-      orderBy: {
-        index: "asc",
-      },
+    if (type != 0) {
+      cards = await prisma.cards.findMany({
+        where: {
+          collection_index: parseInt(id),
+          OR: [
+            {
+              index: 1,
+            },
+            {
+              is_video: typeBool,
+            },
+          ],
+        },
+        select: {
+          id: true,
+          index: true,
+          content: true,
+          is_video: true,
+          video_link: true,
+          image_link: true,
+        },
+        orderBy: {
+          index: "asc",
+        },
+      });
+    } else {
+      cards = await prisma.cards.findMany({
+        where: {
+          collection_index: parseInt(id),
+        },
+        select: {
+          id: true,
+          index: true,
+          content: true,
+          is_video: true,
+          video_link: true,
+          image_link: true,
+        },
+        orderBy: {
+          index: "asc",
+        },
+      });
+    }
+
+    cards.forEach((element, index) => {
+      cards[index] = translateCard(element, index, fullUrl);
     });
-  } else {
-    cards = await prisma.cards.findMany({
-      where: {
-        collection_index: parseInt(id),
-      },
-      select: {
-        id: true,
-        index: true,
-        content: true,
-        is_video: true,
-        video_link: true,
-        image_link: true,
-      },
-      orderBy: {
-        index: "asc",
-      },
-    });
+
+    res.json(cards);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
   }
-
-  cards.forEach((element, index) => {
-    cards[index] = translateCard(element, index, fullUrl);
-  });
-
-  res.json(cards);
 });
 
 router.post("/editCard", validateToken, async (req, res) => {
-  let card_collection = req.body.card_collection;
-  let card_index = req.body.index;
+  try {
+    let card_collection = req.body.card_collection;
+    let card_index = req.body.index;
 
-  const updateCard = await prisma.cards.update({
-    where: {
-      id: id,
-    },
-    data: {
-      index: req.body.index,
-      content: req.body.content,
-      imageLink: req.body.image_link,
-      isVideo: req.body.is_video,
-      videoLink: req.body.video_link,
-    },
-  });
+    const updateCard = await prisma.cards.update({
+      where: {
+        id: id,
+      },
+      data: {
+        index: req.body.index,
+        content: req.body.content,
+        imageLink: req.body.image_link,
+        isVideo: req.body.is_video,
+        videoLink: req.body.video_link,
+      },
+    });
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
 });
 
 module.exports = router;

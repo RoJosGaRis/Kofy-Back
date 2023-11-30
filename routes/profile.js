@@ -27,10 +27,10 @@ const translateProfile = (user) => {
 };
 
 router.post("/getProfile", validateToken, async (req, res) => {
-  const { userId } = req.body;
-
-  let existingUser;
   try {
+    const { userId } = req.body;
+
+    // let existingUser;
     const existingUser = await prisma.profiles.findUnique({
       where: {
         login_id: parseInt(userId),
@@ -48,22 +48,22 @@ router.post("/getProfile", validateToken, async (req, res) => {
 });
 
 router.post("/setProfile", validateToken, async (req, res) => {
-  const {
-    userId,
-    names,
-    lastNames,
-    birthday,
-    gender,
-    profilePicture,
-    bloodType,
-    height,
-    weight,
-    allergies,
-    diseases,
-  } = req.body;
-
-  let existingUser;
   try {
+    const {
+      userId,
+      names,
+      lastNames,
+      birthday,
+      gender,
+      profilePicture,
+      bloodType,
+      height,
+      weight,
+      allergies,
+      diseases,
+    } = req.body;
+
+    let existingUser;
     const oldUser = await prisma.profiles.findUnique({
       where: {
         login_id: parseInt(userId),

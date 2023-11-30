@@ -107,11 +107,11 @@ router.post("/createSpeechSession", validateToken, async (req, res) => {
       newAccess = createAccess(6);
       const oldAccess = await prisma.speech_sessions.findFirst({
         where: {
-          access_id: newAccess,
+          access_id: encrypt(newAccess),
         },
       });
 
-      if (oldAccess) {
+      if (decrypt(oldAccess)) {
         flag = true;
       } else {
         flag = false;
@@ -194,7 +194,9 @@ router.post("/endSession", validateToken, async (req, res) => {
 
 router.post("/encrypt", (req, res) => {
   try {
-    res.json(encrypt(req.body.phrase));
+    let text = { iv: req.body.iv, data: req.body.data };
+
+    res.json(encrypt(text));
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
@@ -202,7 +204,7 @@ router.post("/encrypt", (req, res) => {
 
 router.post("/decrypt", (req, res) => {
   try {
-    let text = { iv: req.body.iv, encryptedData: req.body.encryptedData };
+    let text = { iv: req.body.iv, data: req.body.data };
 
     res.json(decrypt(text));
   } catch (err) {
