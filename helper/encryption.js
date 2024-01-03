@@ -6,42 +6,47 @@ const encriptionKey = crypto
   .digest("base64")
   .substring(0, 32);
 
-// const ivText = process.env.encriptionIv;
-// const encriptionIv = crypto
-//   .createHash("sha256")
-//   .update(String(ivText))
-//   .digest("base64")
-//   .substring(0, 16);
+const ivText = process.env.encriptionIv;
+const encriptionIv = crypto
+  .createHash("sha256")
+  .update(String(ivText))
+  .digest("base64")
+  .substring(0, 16);
 
 //Encrypting text
 function encrypt(text) {
-  if (text.iv === " ") {
-    text.iv = crypto.randomBytes(16);
-  } else {
-    text.iv = Buffer.from(text.iv, "hex");
-  }
+  let iv;
+  // if (text.iv === " ") {
+  iv = crypto.randomBytes(16);
+  // } else {
+  // iv = Buffer.from(process.env.IVKEY, "hex");
+  // }
+  // let iv = Buffer.from(text.iv, "hex");
 
-  console.log(text.iv);
+  console.log(iv);
 
   let cipher = crypto.createCipheriv(
     "aes-256-cbc",
     Buffer.from(encriptionKey),
-    text.iv
+    iv
   );
   let encrypted = cipher.update(text.data);
   encrypted = Buffer.concat([encrypted, cipher.final()]);
   return {
-    iv: text.iv.toString("hex"),
+    iv: iv.toString("hex"),
     data: encrypted.toString("hex"),
   };
 }
 
 // Decrypting text
 function decrypt(text) {
-  let iv = Buffer.from(text.iv, "hex");
-  console.log("HERE - " + Buffer.from(text.iv, "hex"));
-  let encryptedText = Buffer.from(text.data, "hex");
-  console.log("HERE2");
+  let iv = text.substring(0, 32);
+  console.log("Hare - " + iv);
+  iv = Buffer.from(iv, "hex");
+  console.log("HERE - " + iv);
+  let encryptedText = text.substring(32);
+  encryptedText = Buffer.from(encryptedText, "hex");
+  console.log("HERE2 - " + encryptedText);
   let decipher = crypto.createDecipheriv(
     "aes-256-cbc",
     Buffer.from(encriptionKey),
@@ -49,9 +54,9 @@ function decrypt(text) {
   );
   console.log("HERE3");
   let decrypted = decipher.update(encryptedText);
-  console.log("HERE4");
+  console.log("HERE4 - " + decrypted);
   decrypted = Buffer.concat([decrypted, decipher.final()]);
-  console.log("HERE5");
+  console.log("HERE5 - " + decrypted);
   return decrypted.toString();
 }
 

@@ -64,6 +64,6 @@ model doctores {
 
 model speech_sessions {
   id           Int     @id(map: "speeck_sessions_pkey") @default(autoincrement())
-  access_id    String  @db.VarChar(7)
+  access_id    String
   current_text String?
 }
