@@ -10,6 +10,7 @@ const router = express.Router();
 
 let fs = require("fs-extra");
 const validateToken = require("../helper/validateToken");
+const { encrypt } = require("../helper/encryption");
 
 let storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -103,6 +104,7 @@ router.post("/getSummary", async (req, res) => {
     // console.log(JSON.stringify(req.body.resultado));
     accessId = req.body.accessId;
     let validateId = "0" + accessId.substring(1, accessId.length);
+    validateId = encrypt;
 
     const session = await prisma.speech_sessions.findFirst({
       where: {
