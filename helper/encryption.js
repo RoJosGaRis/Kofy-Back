@@ -16,41 +16,47 @@ const encriptionIv = crypto
 //Encrypting text
 function encrypt(text) {
   let iv;
-  // if (text.iv === " ") {
-  iv = crypto.randomBytes(16);
-  // } else {
-  // iv = Buffer.from(process.env.IVKEY, "hex");
-  // }
-  // let iv = Buffer.from(text.iv, "hex");
+  if (text.iv === undefined) {
+    iv = crypto.randomBytes(16);
+  } else {
+    iv = crypto
+      .createHash("sha256")
+      .update(String(text.iv))
+      .digest("base64")
+      .substring(0, 16);
+  }
 
   console.log(iv);
 
   let cipher = crypto.createCipheriv(
     "aes-256-cbc",
     Buffer.from(encriptionKey),
-    iv
+    Buffer.from(iv)
   );
+  console.log("PASSED");
   let encrypted = cipher.update(text.data);
+  console.log("PASSED2");
   encrypted = Buffer.concat([encrypted, cipher.final()]);
+  console.log("PASSED3");
   return {
-    iv: iv.toString("hex"),
+    iv: iv,
     data: encrypted.toString("hex"),
   };
 }
 
 // Decrypting text
 function decrypt(text) {
-  let iv = text.substring(0, 32);
+  let iv = text.substring(0, 16);
   console.log("Hare - " + iv);
-  iv = Buffer.from(iv, "hex");
+  // iv = Buffer.from(iv, "hex");
   console.log("HERE - " + iv);
-  let encryptedText = text.substring(32);
+  let encryptedText = text.substring(16);
   encryptedText = Buffer.from(encryptedText, "hex");
   console.log("HERE2 - " + encryptedText);
   let decipher = crypto.createDecipheriv(
     "aes-256-cbc",
     Buffer.from(encriptionKey),
-    iv
+    Buffer.from(iv)
   );
   console.log("HERE3");
   let decrypted = decipher.update(encryptedText);
