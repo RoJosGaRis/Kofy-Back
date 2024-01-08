@@ -10,7 +10,7 @@ datasource db {
 model logins {
   id       Int    @id @default(autoincrement())
   username String
-  email    String
+  email    String @unique(map: "unique_email")
   password String
   type     Int
 }
