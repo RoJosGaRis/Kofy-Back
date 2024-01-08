@@ -8,30 +8,11 @@ datasource db {
 }
 
 model logins {
-  id       Int       @id @default(autoincrement())
-  username String    @db.VarChar(255)
-  email    String    @unique(map: "unique_email") @db.VarChar(255)
-  password String    @db.VarChar(255)
+  id       Int    @id @default(autoincrement())
+  username String
+  email    String
+  password String
   type     Int
-  profiles profiles?
-}
-
-/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
-model profiles {
-  id              Int        @id(map: "id_PK") @default(autoincrement())
-  login_id        Int        @unique(map: "loginsId_Unique")
-  names           String     @db.VarChar(50)
-  last_names      String     @db.VarChar(50)
-  birthday        DateTime   @db.Date
-  gender          String     @db.VarChar(50)
-  profile_picture Int
-  blood_type      String     @db.VarChar(50)
-  height          Int
-  weight          Float
-  allergies       String     @db.VarChar(250)
-  diseases        String     @db.VarChar(250)
-  doctores        doctores[]
-  logins          logins     @relation(fields: [login_id], references: [id], onUpdate: Restrict, map: "loginsId_FK")
 }
 
 model card_collections {
@@ -50,16 +31,6 @@ model cards {
   video_link       String?          @default("") @db.VarChar(100)
   image_link       String?          @default("") @db.VarChar(100)
   card_collections card_collections @relation(fields: [collection_index], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "collections_fkey")
-}
-
-model doctores {
-  id           Int      @id @default(autoincrement())
-  user_id      Int
-  doctor_name  String   @db.VarChar(50)
-  doctor_focus String   @db.VarChar(50)
-  doctor_phone String   @db.VarChar(15)
-  doctor_email String   @db.VarChar(50)
-  profiles     profiles @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "user_doctor_FKEY")
 }
 
 model speech_sessions {
