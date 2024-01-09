@@ -4,7 +4,7 @@
 cd /root/Kofy/Kofy-Back
 
 # git fetch
-git fetch && git reset origin/main --hard
+git pull
 
 # Spin docker containers down to prevent errors
 docker compose -f docker-compose.yml down
