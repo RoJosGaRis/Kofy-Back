@@ -8,6 +8,8 @@ RUN npm install
 
 COPY . .
 
+RUN prisma generate
+
 CMD ["node", "app.js"]
 
 EXPOSE 3000
