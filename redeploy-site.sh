@@ -12,7 +12,7 @@ git pull
 sudo chmod 700 redeploy-site.sh
 
 # Spin docker containers down to prevent errors
-docker compose -f docker-compose.yml down
+docker compose -f docker-compose.yml down --remove-orphans
 
 # Compose docker containers back up
 docker compose -f docker-compose.yml up -d --build
