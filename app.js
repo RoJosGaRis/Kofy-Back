@@ -39,4 +39,4 @@ app.use("/images", express.static("images"));
 app.use("/user", userRouter);
 // app.use("/profile", profileRouter);
 
-app.listen(port, () => console.log(`Express app running on port ${port}!`));
+app.listen(port, '0.0.0.0', () => console.log(`Express app running on port ${port}!`));
