@@ -1,6 +1,7 @@
 require("dotenv").config();
 const cors = require("cors");
 const bodyParser = require("body-parser");
+const https = require("https");
 const crypto = require("crypto");
 
 const express = require("express");
@@ -8,7 +9,7 @@ const express = require("express");
 const { PrismaClient } = require("@prisma/client");
 
 const app = express();
-const port = 3000;
+const port = 443;
 const prisma = new PrismaClient();
 
 app.use(express.json());
