@@ -57,7 +57,7 @@ router.post("/summary", validateToken, async (req, res) => {
       data: String(req.body.acccessId),
       iv: req.body.accessId,
     });
-    newAccess = newAccess.iv + newAccess.data;
+    newAccess = newAccess.data;
 
     const session = await prisma.speech_sessions.updateMany({
       where: {
@@ -115,7 +115,7 @@ router.post("/createSpeechSession", validateToken, async (req, res) => {
     newAccess = encrypt({ data: newAccess, iv: newAccess });
     const newSession = await prisma.speech_sessions.create({
       data: {
-        access_id: newAccess.iv + newAccess.data,
+        access_id: newAccess.data,
         current_text: "",
       },
       select: {
