@@ -16,16 +16,13 @@ services:
     environment:
       - CERTBOT_EMAIL=diego_gtz_t@hotmail.com
     ports:
-      - 80:80
-      - 443:443
+      - "80:80"
+      - "443:443"
     volumes:
       - nginx_secrets:/etc/letsencrypt
       - ./user_conf.d:/etc/nginx/user_conf.d
     depends_on:
       - kofy-back
-    expose:
-      - 80
-      - 443
 
 volumes:
   nginx_secrets:
