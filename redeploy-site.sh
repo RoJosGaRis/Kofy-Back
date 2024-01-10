@@ -9,7 +9,7 @@ git stash
 # git fetch
 git pull
 
-chmod 700 redeploy-site.sh
+sudo chmod 700 redeploy-site.sh
 
 # Spin docker containers down to prevent errors
 docker compose -f docker-compose.yml down
