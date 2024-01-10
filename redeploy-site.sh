@@ -1,7 +1,10 @@
 #!/bin/bash
 
 # cd into projects folder
-cd /Kofy/Kofy-Back
+cd ~/Kofy/Kofy-Back
+
+# git stach
+git stash
 
 # git fetch
 git pull
