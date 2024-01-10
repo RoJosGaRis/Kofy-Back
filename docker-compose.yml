@@ -1,7 +1,7 @@
 version: "3"
 services:
-  kofyBack:
-    container_name: kofyBack
+  kofyback:
+    container_name: kofyback
     build: .
     restart: always
     env_file:
@@ -20,7 +20,7 @@ services:
       - nginx_secrets:/etc/letsencrypt
       - ./user_conf.d:/etc/nginx/user_conf.d
     depends_on:
-      - kofyBack
+      - kofyback
 
 volumes:
   nginx_secrets:
