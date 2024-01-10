@@ -14,7 +14,7 @@ services:
     image: jonasal/nginx-certbot
     restart: always
     environment:
-      - CERTBOT_EMAIL=a01284841@tec.mx
+      - CERTBOT_EMAIL=diego_gtz_t@hotmail.com
     ports:
       - 80:80
       - 443:443
@@ -23,6 +23,8 @@ services:
       - ./user_conf.d:/etc/nginx/user_conf.d
     depends_on:
       - kofy-back
+    expose:
+      - 80
 
 volumes:
   nginx_secrets:
