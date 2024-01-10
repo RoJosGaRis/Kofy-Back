@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # cd into projects folder
-cd /root/Kofy/Kofy-Back
+cd /Kofy/Kofy-Back
 
 # git fetch
 git pull
