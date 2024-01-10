@@ -25,6 +25,7 @@ services:
       - kofy-back
     expose:
       - 80
+      - 443
 
 volumes:
   nginx_secrets:
