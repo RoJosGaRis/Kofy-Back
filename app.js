@@ -23,19 +23,19 @@ app.use(
 );
 
 const userRouter = require("./routes/userSession");
-const profileRouter = require("./routes/profile");
+// const profileRouter = require("./routes/profile");
 const learningRouter = require("./routes/learning");
 const consultRouter = require("./routes/consult");
 const dashboardRouter = require("./routes/dashboard");
 
 app.use("/user", userRouter);
-app.use("/profile", profileRouter);
+// app.use("/profile", profileRouter);
 app.use("/consult", consultRouter);
 app.use("/dashboard", dashboardRouter);
 app.use("/learning", learningRouter);
 app.use("/images", express.static("images"));
 
 app.use("/user", userRouter);
-app.use("/profile", profileRouter);
+// app.use("/profile", profileRouter);
 
 app.listen(port, () => console.log(`Express app running on port ${port}!`));
