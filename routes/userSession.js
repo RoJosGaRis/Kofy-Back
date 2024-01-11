@@ -12,15 +12,15 @@ const tokenExpirationTime = "7d";
 router.post("/register", async (req, res) => {
   try {
     const { username, email, password, type } = req.body;
-    const oldUser = await prisma.logins.findUnique({
-      where: {
-        email: email,
-      },
-    });
+    // const oldUser = await prisma.logins.findUnique({
+    //   where: {
+    //     email: email,
+    //   },
+    // });
 
-    if (oldUser) {
-      throw new Error("User already exists");
-    }
+    // if (oldUser) {
+    //   throw new Error("User already exists");
+    // }
     console.log("HERE 1");
     bcrypt
       .genSalt(Number(process.env.SALT_ROUNDS))
@@ -51,6 +51,7 @@ router.post("/register", async (req, res) => {
         throw err;
       });
   } catch (error) {
+    console.log(error.message);
     res.status(400).json({ message: error.message });
   }
 });
