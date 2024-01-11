@@ -30,7 +30,7 @@ router.post("/register", async (req, res) => {
       .then(async (hash) => {
         newUser = await prisma.logins.create({
           data: {
-            username,
+            username: username,
             email: email.toLowerCase(),
             password: hash,
             type: Number(type),
@@ -42,6 +42,7 @@ router.post("/register", async (req, res) => {
           process.env.TOKEN_KEY,
           { expiresIn: tokenExpirationTime }
         );
+
         res.status(201).send({ token: token, userId: newUser.id });
       })
       .catch((err) => {
