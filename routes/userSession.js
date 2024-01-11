@@ -62,6 +62,8 @@ router.post("/login", async (req, res) => {
       },
     });
 
+    console.log(existingUser);
+
     if (!existingUser) {
       throw new Error("User not found");
     }
