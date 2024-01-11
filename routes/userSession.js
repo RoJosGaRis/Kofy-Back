@@ -23,7 +23,7 @@ router.post("/register", async (req, res) => {
     // }
     console.log("HERE 1");
     bcrypt
-      .genSalt(Number(process.env.SALT_ROUNDS))
+      .genSalt(10)
       .then((salt) => {
         console.log("HERE 2");
         return bcrypt.hash(password, salt);
