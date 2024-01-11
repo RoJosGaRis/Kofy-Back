@@ -14,7 +14,7 @@ router.post("/register", async (req, res) => {
     const { username, email, password, type } = req.body;
     const oldUser = await prisma.logins.findUnique({
       where: {
-        email: email.toLowerCase(),
+        email: email,
       },
     });
 
