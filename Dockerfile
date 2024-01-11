@@ -10,6 +10,6 @@ COPY . .
 
 RUN npx prisma generate
 
-CMD ["npm", "start"]
+CMD ["node", "app.js"]
 
 EXPOSE 3000
