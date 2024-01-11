@@ -7,6 +7,8 @@ const validateToken = require("../helper/validateToken");
 const prisma = new PrismaClient();
 const router = express.Router();
 
+const fullUrl = "https://kofy-api.duckdns.org/images";
+
 const translateCard = (element, index, fullUrl) => {
   let newElement = {
     id: index + 1,
@@ -23,7 +25,6 @@ const translateCard = (element, index, fullUrl) => {
 router.get("/getCardCollections", async (req, res) => {
   try {
     const collections = await prisma.card_collections.findMany();
-    let fullUrl = "https://" + req.get("host") + "/images";
 
     collections.forEach((element) => {
       currIcon = element.icon;
@@ -39,8 +40,6 @@ router.post("/getCardCollections", async (req, res) => {
   try {
     id = req.body.id;
     let type = req.body.cardType;
-
-    let fullUrl = "https://" + req.get("host") + "/images";
 
     let cards;
     let typeBool = type == 1;
