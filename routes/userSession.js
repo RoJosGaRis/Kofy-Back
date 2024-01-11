@@ -30,7 +30,7 @@ router.post("/register", async (req, res) => {
       .then(async (hash) => {
         newUser = await prisma.logins.create({
           data: {
-            username,
+            username: username,
             email: email.toLowerCase(),
             password: hash,
             type: Number(type),
