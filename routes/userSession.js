@@ -66,7 +66,15 @@ router.post("/login", async (req, res) => {
       throw new Error("User not found");
     }
 
-    const isMatch = await bcrypt.compare(password, existingUser.password);
+    var isMatch;
+    await bcrypt.compare(password, existingUser.password).then(
+      (result) => {
+        isMatch = result;
+      },
+      (err) => {
+        throw err;
+      }
+    );
 
     if (!isMatch) {
       throw new Error("Credentials do not match");
