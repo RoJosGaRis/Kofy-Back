@@ -21,13 +21,15 @@ router.post("/register", async (req, res) => {
     if (oldUser) {
       throw new Error("User already exists");
     }
-
+    console.log("HERE 1");
     bcrypt
       .genSalt(Number(process.env.SALT_ROUNDS))
       .then((salt) => {
+        console.log("HERE 2");
         return bcrypt.hash(password, salt);
       })
       .then(async (hash) => {
+        console.log("HERE 3");
         newUser = await prisma.logins.create({
           data: {
             username: username,
@@ -36,12 +38,13 @@ router.post("/register", async (req, res) => {
             type: Number(type),
           },
         });
-
+        console.log("HERE 4");
         const token = jwt.sign(
           { user_id: newUser.id, email },
           process.env.TOKEN_KEY,
           { expiresIn: tokenExpirationTime }
         );
+        console.log("HERE 5");
         res.status(201).send({ token: token, userId: newUser.id });
       })
       .catch((err) => {
