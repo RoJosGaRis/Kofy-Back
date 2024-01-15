@@ -21,15 +21,12 @@ router.post("/register", async (req, res) => {
     // if (oldUser) {
     //   throw new Error("User already exists");
     // }
-    console.log("HERE 1");
     bcrypt
       .genSalt(10)
       .then((salt) => {
-        console.log("HERE 2");
         return bcrypt.hash(password, salt);
       })
       .then(async (hash) => {
-        console.log("HERE 3");
         newUser = await prisma.logins.create({
           data: {
             username: username,
@@ -38,20 +35,19 @@ router.post("/register", async (req, res) => {
             type: Number(type),
           },
         });
-        console.log("HERE 4");
+
         const token = jwt.sign(
           { user_id: newUser.id, email },
           process.env.TOKEN_KEY,
           { expiresIn: tokenExpirationTime }
         );
-        console.log("HERE 5");
+
         res.status(201).send({ token: token, userId: newUser.id });
       })
       .catch((err) => {
         throw err;
       });
   } catch (error) {
-    console.log(error.message);
     res.status(400).json({ message: error.message });
   }
 });
@@ -59,7 +55,7 @@ router.post("/register", async (req, res) => {
 router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
-    console.log(req.body);
+
     const existingUser = await prisma.logins.findUnique({
       where: {
         email: email,
@@ -94,7 +90,6 @@ router.post("/login", async (req, res) => {
         { expiresIn: tokenExpirationTime }
       );
     } catch (err) {
-      console.log(err);
       throw new Error("Error! Something went wrong.");
     }
     res.status(201).json({
