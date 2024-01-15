@@ -104,11 +104,11 @@ router.post("/getSummary", async (req, res) => {
     // console.log(JSON.stringify(req.body.resultado));
     accessId = req.body.accessId;
     let validateId = "0" + accessId.substring(1, accessId.length);
-    validateId = encrypt;
+    validateId = encrypt({ data: validateId, iv: validateId });
 
     const session = await prisma.speech_sessions.findFirst({
       where: {
-        access_id: validateId,
+        access_id: validateId.data,
       },
       select: {
         current_text: true,
@@ -125,13 +125,17 @@ router.post("/verifySummary", async (req, res) => {
   try {
     console.log("REQUEST BODY");
     console.log(req.body);
+    let oldAccess = encrypt({ data: req.body.accessId, iv: req.body.accessId });
+    let newAccess = encrypt({
+      data: "1" + req.body.accessId.substring(1, req.body.accessId.length),
+      iv: "1" + req.body.accessId.substring(1, req.body.accessId.length),
+    });
     const session = await prisma.speech_sessions.updateMany({
       where: {
-        access_id: req.body.accessId,
+        access_id: oldAccess.data,
       },
       data: {
-        access_id:
-          "1" + req.body.accessId.substring(1, req.body.accessId.length),
+        access_id: newAccess.data,
         current_text: JSON.stringify(req.body.session),
       },
     });

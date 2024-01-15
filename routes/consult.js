@@ -48,11 +48,6 @@ router.post("/summary", validateToken, async (req, res) => {
       response_format: { type: "json_object" },
     });
 
-    // req.body = {
-    //   success: true,
-    //   completion: completion.choices[0],
-    // };
-
     console.log(req.body.accessId);
 
     let newAccess = encrypt({
@@ -137,10 +132,11 @@ router.post("/getSummary", validateToken, async (req, res) => {
   try {
     requestId = req.body.accessId;
     validatedId = "1" + requestId.substring(1, requestId.length);
+    validateAccess = encrypt({ data: validatedId, iv: validatedId });
 
     const session = await prisma.speech_sessions.findFirst({
       where: {
-        access_id: validatedId,
+        access_id: validatedAccess.data,
       },
       select: {
         current_text: true,
@@ -170,14 +166,16 @@ router.post("/endSession", validateToken, async (req, res) => {
   try {
     requestId = req.body.accessId;
     validatedId = "1" + requestId.substring(1, requestId.length);
+    validateAccess = encrypt({ data: validatedId, iv: validatedId });
     finishedId = "2" + requestId.substring(1, requestId.length);
+    finishedAccess = encrypt({ data: finishedId, iv: finishedId });
 
     const session = await prisma.speech_sessions.updateMany({
       where: {
-        access_id: validatedId,
+        access_id: validateAccess.data,
       },
       data: {
-        access_id: finishedId,
+        access_id: finishedAccess.data,
         current_text: " ",
       },
     });
