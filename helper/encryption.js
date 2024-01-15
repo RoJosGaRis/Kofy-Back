@@ -39,19 +39,23 @@ function encrypt(text) {
   encrypted = Buffer.concat([encrypted, cipher.final()]);
   console.log("PASSED3");
   return {
-    iv: iv,
+    iv: text.iv,
     data: encrypted.toString("hex"),
   };
 }
 
 // Decrypting text
 function decrypt(text) {
-  let iv = text.substring(0, 16);
-  console.log("Hare - " + iv);
-  // iv = Buffer.from(iv, "hex");
-  console.log("HERE - " + iv);
-  let encryptedText = text.substring(16);
-  encryptedText = Buffer.from(encryptedText, "hex");
+  console.log("HERE - " + text.iv);
+  let iv = crypto
+    .createHash("sha256")
+    .update(String(text.iv))
+    .digest("base64")
+    .substring(0, 16);
+  console.log("HERE0.5 - " + iv);
+
+  console.log("HERE1 - " + text.data);
+  let encryptedText = Buffer.from(text.data, "hex");
   console.log("HERE2 - " + encryptedText);
   let decipher = crypto.createDecipheriv(
     "aes-256-cbc",
