@@ -113,7 +113,7 @@ router.post("/createSpeechSession", validateToken, async (req, res) => {
     let flag = true;
     let newAccess;
     newAccess = createAccess(6);
-    console.log("START - " + newAccess);
+
     newAccess = encrypt({ data: newAccess, iv: newAccess });
     const newSession = await prisma.speech_sessions.create({
       data: {
@@ -125,10 +125,9 @@ router.post("/createSpeechSession", validateToken, async (req, res) => {
       },
     });
 
-    console.log("NEW SESSIon : " + newAccess.iv);
     res
       .status(200)
-      .send({ accessId: decrypt({ data: newAccess.data, iv: newAccess.iv }) });
+      .send({ access_id: decrypt({ data: newAccess.data, iv: newAccess.iv }) });
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
