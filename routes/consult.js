@@ -186,7 +186,7 @@ router.post("/endSession", validateToken, async (req, res) => {
       res.status(200).json({ message: "not ok" });
     }
   } catch (err) {
-    res.status(400).send();
+    res.status(400).send({ message: err.message });
   }
 });
 
