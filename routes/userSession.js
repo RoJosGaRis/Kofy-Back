@@ -131,4 +131,85 @@ router.post("/verify", validateToken, async (req, res) => {
   }
 });
 
+router.post("/apple/register", async (req, res) => {
+  try {
+    const { email, password, type } = req.body;
+
+    bcrypt
+      .genSalt(10)
+      .then((salt) => {
+        return bcrypt.hash(password, salt);
+      })
+      .then(async (hash) => {
+        newUser = await prisma.logins.create({
+          data: {
+            username: "",
+            email: email.toLowerCase(),
+            password: hash,
+            type: Number(type),
+          },
+        });
+
+        const token = jwt.sign(
+          { user_id: newUser.id, email },
+          process.env.TOKEN_KEY,
+          { expiresIn: tokenExpirationTime }
+        );
+
+        res.status(201).send({ token: token, userId: newUser.id });
+      })
+      .catch((err) => {
+        throw err;
+      });
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+});
+
+router.post("/apple/login", async (req, res) => {
+  try {
+    const { password } = req.body;
+
+    bcrypt
+      .genSalt(10)
+      .then((salt) => {
+        return bcrypt.hash(password, salt);
+      })
+      .then(async (hash) => {
+        const existingUser = await prisma.logins.findUnique({
+          where: {
+            password: hash,
+            type: 2,
+          },
+        });
+
+        if (!existingUser) {
+          throw new Error("User not found");
+        }
+
+        let token;
+
+        try {
+          token = jwt.sign(
+            { userId: existingUser.id, email: existingUser.email },
+            process.env.TOKEN_KEY,
+            { expiresIn: tokenExpirationTime }
+          );
+        } catch (err) {
+          throw new Error("Error! Something went wrong.");
+        }
+
+        res.status(201).json({
+          userId: existingUser.id,
+          token: token,
+        });
+      })
+      .catch((err) => {
+        throw err;
+      });
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+});
+
 module.exports = router;
