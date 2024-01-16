@@ -176,14 +176,14 @@ router.post("/apple/login", async (req, res) => {
         return bcrypt.hash(password, salt);
       })
       .then(async (hash) => {
-        const existingUser = await prisma.logins.findUnique({
+        const existingUsers = await prisma.logins.findMany({
           where: {
             password: hash,
             type: 2,
           },
         });
 
-        if (!existingUser) {
+        if (existingUsers.length == 0) {
           throw new Error("User not found");
         }
 
@@ -191,7 +191,7 @@ router.post("/apple/login", async (req, res) => {
 
         try {
           token = jwt.sign(
-            { userId: existingUser.id, email: existingUser.email },
+            { userId: existingUsers[0].id, email: existingUsers[0].email },
             process.env.TOKEN_KEY,
             { expiresIn: tokenExpirationTime }
           );
@@ -200,7 +200,7 @@ router.post("/apple/login", async (req, res) => {
         }
 
         res.status(201).json({
-          userId: existingUser.id,
+          userId: existingUsers[0].id,
           token: token,
         });
       })
