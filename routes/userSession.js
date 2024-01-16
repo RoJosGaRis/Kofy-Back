@@ -176,6 +176,8 @@ router.post("/apple/login", async (req, res) => {
         return bcrypt.hash(password, salt);
       })
       .then(async (hash) => {
+        console.log(hash);
+        
         const existingUsers = await prisma.logins.findMany({
           where: {
             password: hash,
