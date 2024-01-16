@@ -135,32 +135,22 @@ router.post("/apple/register", async (req, res) => {
   try {
     const { email, password, type } = req.body;
 
-    bcrypt
-      .genSalt(10)
-      .then((salt) => {
-        return bcrypt.hash(password, salt);
-      })
-      .then(async (hash) => {
-        newUser = await prisma.logins.create({
-          data: {
-            username: "",
-            email: email.toLowerCase(),
-            password: hash,
-            type: Number(type),
-          },
-        });
+    newUser = await prisma.logins.create({
+      data: {
+        username: "",
+        email: email.toLowerCase(),
+        password: password,
+        type: Number(type),
+      },
+    });
 
-        const token = jwt.sign(
-          { user_id: newUser.id, email },
-          process.env.TOKEN_KEY,
-          { expiresIn: tokenExpirationTime }
-        );
+    const token = jwt.sign(
+      { user_id: newUser.id, email },
+      process.env.TOKEN_KEY,
+      { expiresIn: tokenExpirationTime }
+    );
 
-        res.status(201).send({ token: token, userId: newUser.id });
-      })
-      .catch((err) => {
-        throw err;
-      });
+    res.status(201).send({ token: token, userId: newUser.id });
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
@@ -169,46 +159,34 @@ router.post("/apple/register", async (req, res) => {
 router.post("/apple/login", async (req, res) => {
   try {
     const { password } = req.body;
+    
+    const existingUsers = await prisma.logins.findMany({
+      where: {
+        password: password,
+        type: 2,
+      },
+    });
 
-    bcrypt
-      .genSalt(10)
-      .then((salt) => {
-        return bcrypt.hash(password, salt);
-      })
-      .then(async (hash) => {
-        console.log(hash);
-        
-        const existingUsers = await prisma.logins.findMany({
-          where: {
-            password: hash,
-            type: 2,
-          },
-        });
+    if (existingUsers.length == 0) {
+      throw new Error("User not found");
+    }
 
-        if (existingUsers.length == 0) {
-          throw new Error("User not found");
-        }
+    let token;
 
-        let token;
+    try {
+      token = jwt.sign(
+        { userId: existingUsers[0].id, email: existingUsers[0].email },
+        process.env.TOKEN_KEY,
+        { expiresIn: tokenExpirationTime }
+      );
+    } catch (err) {
+      throw new Error("Error! Something went wrong.");
+    }
 
-        try {
-          token = jwt.sign(
-            { userId: existingUsers[0].id, email: existingUsers[0].email },
-            process.env.TOKEN_KEY,
-            { expiresIn: tokenExpirationTime }
-          );
-        } catch (err) {
-          throw new Error("Error! Something went wrong.");
-        }
-
-        res.status(201).json({
-          userId: existingUsers[0].id,
-          token: token,
-        });
-      })
-      .catch((err) => {
-        throw err;
-      });
+    res.status(201).json({
+      userId: existingUsers[0].id,
+      token: token,
+    });
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
