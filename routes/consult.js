@@ -144,7 +144,7 @@ router.post("/getSummary", validateToken, async (req, res) => {
     });
 
     if (session) {
-      result = JSON.parse(JSON.parse(session.current_text));
+      result = JSON.parse(session.current_text);
       const resultadoArray = result.resultado;
 
       res.json({
