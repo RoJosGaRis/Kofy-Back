@@ -139,10 +139,10 @@ router.post("/verifySummary", async (req, res) => {
         current_text: JSON.stringify(req.body.session),
       },
     });
-    res.header("Access-Control-Allow-Origin", "https://kofy.vercel.app");
+    res.header("Access-Control-Allow-Origin", "http://localhost:3000");
     res.status(200).send({ message: "ok" });
   } catch (err) {
-    res.header("Access-Control-Allow-Origin", "https://kofy.vercel.app");
+    res.header("Access-Control-Allow-Origin", "http://localhost:3000");
     res.status(400).json({ message: err.message });
   }
 });
