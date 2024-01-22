@@ -17,7 +17,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(
   cors({
-    origin: "http://localhost:3000", // Replace with your Vercel app's domain
+    origin: "https://kofy.diloensenas.org", // Replace with your Vercel app's domain
     methods: ["GET", "POST", "PUT"], // Allow specific HTTP methods
     allowedHeaders: ["Content-Type", "Authorization"], // Allow specific headers
   })

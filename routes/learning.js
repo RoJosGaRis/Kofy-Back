@@ -7,7 +7,7 @@ const validateToken = require("../helper/validateToken");
 const prisma = new PrismaClient();
 const router = express.Router();
 
-const fullUrl = "https://kofy-api.duckdns.org/images";
+const fullUrl = "https://kofy-api.diloensenas.org/images";
 
 const translateCard = (element, index, fullUrl) => {
   let newElement = {
