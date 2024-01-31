@@ -8,30 +8,7 @@ services:
       - .env
     networks:
       - router-network
-      # - app-network
-
-  # nginx:
-  #   container_name: nginx
-  #   image: jonasal/nginx-certbot
-  #   restart: always
-  #   environment:
-  #     - CERTBOT_EMAIL=diego_gtz_t@hotmail.com
-  #   ports:
-  #     - 80:80
-  #     - 443:443
-  #   volumes:
-  #     - nginx_secrets:/etc/letsencrypt
-  #     - ./user_conf.d:/etc/nginx/user_conf.d
-  #   depends_on:
-  #     - kofyback
-  #   networks:
-  #     - app-network
-
-# volumes:
-#   nginx_secrets:
 
 networks:
   router-network:
     external: true
-  # app-network:
-  #   driver: bridge  
