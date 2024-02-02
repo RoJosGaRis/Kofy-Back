@@ -86,6 +86,8 @@ router.post("/reminders", validateToken, async (req, res) => {
       response_format: { type: "json_object" },
     });
 
+    console.log(completion);
+
     req.body = {
       success: true,
       completion: completion.choices[0],
@@ -97,8 +99,11 @@ router.post("/reminders", validateToken, async (req, res) => {
       element.everyXHours = parseInt(newHours);
     });
 
+    console.log(response)
+
     res.json(response);
   } catch (err) {
+    console.log(err)
     res.status(400).json({ message: err.message });
   }
 });
