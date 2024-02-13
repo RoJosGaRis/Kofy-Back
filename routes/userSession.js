@@ -192,7 +192,7 @@ router.post("/apple/login", async (req, res) => {
   }
 });
 
-router.post("/delete", verifyToken, async (req, res) => {
+router.post("/delete", validateToken, async (req, res) => {
   try {
     const { userId } = req.body;
     const deletedUser = await prisma.logins.delete({
