@@ -159,7 +159,7 @@ router.post("/apple/register", async (req, res) => {
 router.post("/apple/login", async (req, res) => {
   try {
     const { password } = req.body;
-    
+
     const existingUsers = await prisma.logins.findMany({
       where: {
         password: password,
@@ -186,6 +186,23 @@ router.post("/apple/login", async (req, res) => {
     res.status(201).json({
       userId: existingUsers[0].id,
       token: token,
+    });
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+});
+
+router.post("/delete", verifyToken, async (req, res) => {
+  try {
+    const { userId } = req.body;
+    const deletedUser = await prisma.logins.delete({
+      where: {
+        id: userId,
+      },
+    });
+
+    res.status(201).json({
+      message: "User deleted",
     });
   } catch (error) {
     res.status(400).json({ message: error.message });
