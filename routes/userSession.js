@@ -197,7 +197,7 @@ router.post("/delete", validateToken, async (req, res) => {
     const { userId } = req.body;
     const deletedUser = await prisma.logins.delete({
       where: {
-        id: userId,
+        id: parseInt(userId),
       },
     });
 
